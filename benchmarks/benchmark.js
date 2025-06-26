@@ -2,7 +2,7 @@
  * Simple benchmark comparing NebulaDB with other embedded databases
  */
 
-const { createDb } = require('@nebula/core');
+const { createDb } = require('@nebula-db/core');
 const { MemoryAdapter } = require('@nebula/adapter-memory');
 const Loki = require('lokijs');
 const { Low } = require('lowdb');

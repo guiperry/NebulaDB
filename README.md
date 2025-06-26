@@ -282,3 +282,5 @@ If you encounter errors related to Node.js version compatibility:
 ## License
 
 MIT
+
+> **Note:** If you are running NebulaDB in the browser, some cryptographic functions (like `crypto.randomFillSync`) may not be available. A simple polyfill is provided in the demo, but it is NOT cryptographically secure. For production, ensure your environment provides the necessary crypto APIs or use a secure polyfill.

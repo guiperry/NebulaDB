@@ -1,4 +1,4 @@
-import { Plugin, Document, Query } from '@nebula/core';
+import { Plugin, Document, Query } from '@nebula-db/core';
 
 /**
  * Options for the cache plugin

@@ -1,4 +1,4 @@
-import { IDatabase } from '@nebula/core';
+import { IDatabase } from '@nebula-db/core';
 import { createDevtoolsConnection } from './connection';
 import { DevtoolsOptions } from './types';
 

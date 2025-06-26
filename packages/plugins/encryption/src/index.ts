@@ -1,4 +1,4 @@
-import { Plugin, Document } from '@nebula/core';
+import { Plugin, Document } from '@nebula-db/core';
 
 /**
  * Options for the encryption plugin

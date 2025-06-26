@@ -1,4 +1,4 @@
-import { Adapter, Document, Query, UpdateOperation, IDatabase } from '@nebula/core';
+import { Adapter, Document, Query, UpdateOperation, IDatabase } from '@nebula-db/core';
 
 // Import WASM module
 let wasmModule: any;

@@ -10,8 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@nebula/core": "^0.1.0",
-    "@nebula/adapter-indexeddb": "^0.1.0",
+    "@nebula-db/core": "^0.1.0",
+    "@nebula-db/adapter-indexeddb": "^0.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

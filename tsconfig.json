@@ -12,7 +12,7 @@
     "lib": ["ES2020", "DOM"],
     "baseUrl": ".",
     "paths": {
-      "@nebula/core": ["packages/core/src"],
+      "@nebula-db/core": ["packages/core/src"],
       "@nebula/adapter-*": ["packages/adapters/*/src"],
       "@nebula/plugin-*": ["packages/plugins/*/src"]
     }

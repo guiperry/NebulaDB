@@ -15,4 +15,4 @@ export {
 export { ModelManager } from './model-manager';
 
 // Re-export necessary types from core
-export { IndexType } from '@nebula/core';
+export { IndexType } from '@nebula-db/core';

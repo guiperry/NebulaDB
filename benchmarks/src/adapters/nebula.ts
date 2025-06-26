@@ -1,4 +1,5 @@
-import { createDb, MemoryAdapter } from '@nebula/core';
+import { createDb } from '@nebula-db/core';
+import { MemoryAdapter } from '@nebula-db/adapter-memory';
 import { DatabaseAdapter, TestDocument } from '../types';
 
 /**

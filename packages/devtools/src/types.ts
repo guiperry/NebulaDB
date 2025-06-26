@@ -1,4 +1,4 @@
-import { Document, Query, UpdateOperation } from '@nebula/core';
+import { Document, Query, UpdateOperation } from '@nebula-db/core';
 
 /**
  * DevTools options

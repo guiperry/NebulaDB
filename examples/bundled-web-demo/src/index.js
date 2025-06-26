@@ -3,13 +3,16 @@ import { MemoryAdapter } from '@nebula-db/adapter-memory';
 import { setTheme, toggleTheme, getTheme } from 'flex-theme';
 import './styles.css';
 
-// Polyfill for crypto.randomFillSync if needed
+// Polyfill for crypto.randomFillSync if needed (for browser compatibility)
+// Note: This is a simple polyfill and does NOT provide cryptographically secure random values.
+// Some libraries may expect Node.js crypto.randomFillSync, which is not available in browsers.
 if (typeof window !== 'undefined' && !window.crypto) {
   window.crypto = {};
 }
 
 if (typeof window !== 'undefined' && window.crypto && !window.crypto.randomFillSync) {
   window.crypto.randomFillSync = function(buffer) {
+    // WARNING: This is NOT cryptographically secure!
     const bytes = new Uint8Array(buffer.length);
     for (let i = 0; i < bytes.length; i++) {
       bytes[i] = Math.floor(Math.random() * 256);

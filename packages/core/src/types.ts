@@ -198,5 +198,6 @@ export interface ICollection {
  */
 export interface Database {
   collection(name: string): ICollection;
+  save(): Promise<void>;
   // Add other necessary methods
 }

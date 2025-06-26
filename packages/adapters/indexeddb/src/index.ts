@@ -1,4 +1,4 @@
-import { Adapter, Document } from '@nebula/core';
+import { Adapter, Document } from '@nebula-db/core';
 
 /**
  * IndexedDB adapter for NebulaDB

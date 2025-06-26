@@ -1,4 +1,4 @@
-import { Plugin, Document } from '@nebula/core';
+import { Plugin, Document } from '@nebula-db/core';
 import { z } from 'zod';
 
 /**

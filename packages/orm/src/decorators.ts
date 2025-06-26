@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { IndexType } from '@nebula/core';
+import { IndexType } from '@nebula-db/core';
 
 // Metadata keys
 const MODEL_META_KEY = 'nebula:model';

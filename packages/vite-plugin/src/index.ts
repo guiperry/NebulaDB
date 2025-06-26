@@ -123,31 +123,31 @@ function generateVirtualModule(
 ): string {
   // Import statements
   let code = `
-    import { createDb } from '@nebula/core';
+    import { createDb } from '@nebula-db/core';
   `;
   
   // Import adapter
   switch (adapter) {
     case 'memory':
-      code += `import { MemoryAdapter } from '@nebula/core';\n`;
+      code += `import { MemoryAdapter } from '@nebula-db/adapter-memory';\n`;
       break;
     case 'localstorage':
     case 'indexeddb':
     case 'filesystem':
     case 'sqlite':
     case 'redis':
-      code += `import { ${adapter.charAt(0).toUpperCase() + adapter.slice(1)}Adapter } from '@nebula/adapter-${adapter}';\n`;
+      code += `import { ${adapter.charAt(0).toUpperCase() + adapter.slice(1)}Adapter } from '@nebula-db/adapter-${adapter}';\n`;
       break;
   }
   
   // Import plugins
   plugins.forEach(plugin => {
-    code += `import { create${plugin.name.charAt(0).toUpperCase() + plugin.name.slice(1)}Plugin } from '@nebula/plugin-${plugin.name}';\n`;
+    code += `import { create${plugin.name.charAt(0).toUpperCase() + plugin.name.slice(1)}Plugin } from '@nebula-db/plugin-${plugin.name}';\n`;
   });
   
   // Import DevTools if enabled
   if (devtools) {
-    code += `import { initDevtools } from '@nebula/devtools';\n`;
+    code += `import { initDevtools } from '@nebula-db/devtools';\n`;
   }
   
   // Create adapter instance
@@ -225,6 +225,3 @@ function generateVirtualModule(
   
   return code;
 }
-
-// Export types
-export { NebulaDBPluginOptions };

@@ -1,4 +1,4 @@
-import { Plugin, Document, Query, UpdateOperation } from '@nebula/core';
+import { Plugin, Document, Query, UpdateOperation } from '@nebula-db/core';
 
 /**
  * Log level

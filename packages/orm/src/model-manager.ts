@@ -1,4 +1,4 @@
-import { IDatabase, ICollection, Document } from '@nebula/core';
+import { IDatabase, ICollection, Document } from '@nebula-db/core';
 import { MODEL_META_KEY, FIELD_META_KEY, INDEX_META_KEY } from './decorators';
 
 /**

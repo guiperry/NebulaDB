@@ -1,4 +1,4 @@
-const { createDb } = require('@nebula/core');
+const { createDb } = require('@nebula-db/core');
 const { MemoryAdapter } = require('@nebula/adapter-memory');
 
 async function runBasicTests() {

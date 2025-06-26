@@ -11,7 +11,7 @@ NebulaDB comes with several built-in plugins:
 The Validation Plugin uses [Zod](https://github.com/colinhacks/zod) to validate documents before they're inserted or updated.
 
 ```typescript
-import { createDb } from '@nebula/core';
+import { createDb } from '@nebula-db/core';
 import { MemoryAdapter } from '@nebula/adapter-memory';
 import { createValidationPlugin } from '@nebula/plugin-validation';
 import { z } from 'zod';
@@ -49,7 +49,7 @@ await users.insert({ name: 'B', email: 'not-an-email' }); // Error: Validation f
 The Encryption Plugin encrypts sensitive data before saving it and decrypts it when loading.
 
 ```typescript
-import { createDb } from '@nebula/core';
+import { createDb } from '@nebula-db/core';
 import { MemoryAdapter } from '@nebula/adapter-memory';
 import { createEncryptionPlugin } from '@nebula/plugin-encryption';
 
@@ -82,7 +82,7 @@ await users.insert({
 The Versioning Plugin tracks document versions and maintains a history of changes.
 
 ```typescript
-import { createDb } from '@nebula/core';
+import { createDb } from '@nebula-db/core';
 import { MemoryAdapter } from '@nebula/adapter-memory';
 import { createVersioningPlugin } from '@nebula/plugin-versioning';
 
@@ -116,7 +116,7 @@ console.log(versions); // All versions of the document
 You can create your own plugins by implementing the `Plugin` interface:
 
 ```typescript
-import { Plugin, Document, Query, UpdateOperation } from '@nebula/core';
+import { Plugin, Document, Query, UpdateOperation } from '@nebula-db/core';
 
 // Create a logging plugin
 const loggingPlugin: Plugin = {
@@ -180,7 +180,7 @@ const db = createDb({
 Here's an example of a custom plugin that adds creation and update timestamps to documents:
 
 ```typescript
-import { Plugin, Document } from '@nebula/core';
+import { Plugin, Document } from '@nebula-db/core';
 
 export function createTimestampsPlugin(options = {}): Plugin {
   const {

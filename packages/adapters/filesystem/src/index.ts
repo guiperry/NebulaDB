@@ -1,4 +1,4 @@
-import { Adapter, Document } from '@nebula/core';
+import { Adapter, Document } from '@nebula-db/core';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 

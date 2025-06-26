@@ -1,10 +1,10 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { createDb, IDatabase } from '@nebula/core';
-import { IndexedDBAdapter } from '@nebula/adapter-indexeddb';
+import { createDb, Database } from '@nebula-db/core';
+import { IndexedDBAdapter } from '@nebula-db/adapter-indexeddb';
 
 // Create context
 interface NebulaContextType {
-  db: IDatabase | null;
+  db: Database | null;
   loading: boolean;
   error: Error | null;
 }
@@ -21,7 +21,7 @@ interface NebulaProviderProps {
 }
 
 export function NebulaProvider({ children }: NebulaProviderProps) {
-  const [db, setDb] = useState<IDatabase | null>(null);
+  const [db, setDb] = useState<Database | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -31,7 +31,7 @@ export function NebulaProvider({ children }: NebulaProviderProps) {
         // Create database with IndexedDB adapter
         const database = createDb({
           adapter: new IndexedDBAdapter('nebula-react-example', 'collections', 1)
-        });
+        }) as Database;
 
         // Initialize collections
         database.collection('tasks');

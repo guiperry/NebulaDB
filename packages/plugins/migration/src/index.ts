@@ -1,4 +1,4 @@
-import { Plugin, IDatabase, Document } from '@nebula/core';
+import { Plugin, IDatabase, Document } from '@nebula-db/core';
 
 /**
  * Migration definition

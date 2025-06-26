@@ -1,7 +1,7 @@
 const memwatch = require('memwatch-next');
 const heapdump = require('heapdump');
 const path = require('path');
-const { createDb, MemoryAdapter } = require('@nebula/core');
+const { createDb, MemoryAdapter } = require('@nebula-db/core');
 
 // Create database
 const db = createDb({

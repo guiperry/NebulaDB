@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createDb } from '@nebula/core';
+import { createDb } from '@nebula-db/core';
 import { MemoryAdapter } from '@nebula/adapter-memory';
 
 describe('Nested Queries', () => {

@@ -1,4 +1,5 @@
-import { createDb, MemoryAdapter } from '@nebula/core';
+import { createDb } from '@nebula-db/core';
+import { MemoryAdapter } from '@nebula-db/adapter-memory';
 import { Model, Field, Index, Relation, RelationType, ModelManager, IndexType } from '../src';
 
 // Create a database
@@ -11,30 +12,30 @@ const modelManager = new ModelManager(db);
 @Model({ timestamps: true })
 class User {
   @Field()
-  id: string;
+  id: string = '';
   
   @Field({ required: true })
   @Index({ type: IndexType.UNIQUE })
-  email: string;
+  email: string = '';
   
   @Field({ required: true })
-  name: string;
+  name: string = '';
   
   @Field()
-  age: number;
+  age: number = 0;
   
   @Relation({
     type: RelationType.ONE_TO_MANY,
     target: () => Post,
-    foreignKey: 'authorId'
+    inverseSide: 'author'
   })
-  posts: Post[];
+  posts: Post[] = [];
   
   @Field()
-  createdAt: string;
+  createdAt: string = '';
   
   @Field()
-  updatedAt: string;
+  updatedAt: string = '';
 }
 
 // Define Post model

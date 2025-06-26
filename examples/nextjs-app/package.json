@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@nebula/core": "^0.1.0",
+    "@nebula-db/core": "^0.1.0",
     "@nebula/adapter-indexeddb": "^0.1.0",
     "@nebula/adapter-memory": "^0.1.0",
     "next": "14.0.4",

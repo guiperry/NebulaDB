@@ -8,6 +8,8 @@ import {
   Plugin
 } from './types';
 
+export type { IDatabase } from './types';
+
 export class Database implements IDatabase {
   collections: Map<string, ICollection> = new Map();
   adapter: Adapter;

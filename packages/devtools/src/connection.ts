@@ -1,4 +1,4 @@
-import { IDatabase, Document, Query, UpdateOperation } from '@nebula/core';
+import { IDatabase, Document, Query, UpdateOperation } from '@nebula-db/core';
 import { io } from 'socket.io-client';
 import { ConnectionOptions, EventType, Event, DatabaseSnapshot } from './types';
 

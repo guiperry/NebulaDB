@@ -1,4 +1,4 @@
-import { Adapter, Document } from '@nebula/core';
+import { Adapter, Document } from '@nebula-db/core';
 import Database from 'better-sqlite3';
 import * as fs from 'fs';
 import * as path from 'path';

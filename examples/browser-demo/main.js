@@ -1,4 +1,4 @@
-import { createDb } from '@nebula/core';
+import { createDb } from '@nebula-db/core';
 import { LocalStorageAdapter } from '@nebula/adapter-localstorage';
 
 // Create a database with localStorage adapter

@@ -1,4 +1,4 @@
-import { Plugin, Document, Database } from '@nebula/core';
+import { Plugin, Document, Database } from '@nebula-db/core';
 
 /**
  * Options for the versioning plugin

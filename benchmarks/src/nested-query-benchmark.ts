@@ -1,5 +1,5 @@
-import { createDb } from '@nebula/core';
-import { MemoryAdapter } from '@nebula/adapter-memory';
+import { createDb } from '@nebula-db/core';
+import { MemoryAdapter } from '@nebula-db/adapter-memory';
 import { performance } from 'perf_hooks';
 import { QueryProfiler } from './query-profiler';
 

@@ -1,4 +1,4 @@
-import { Plugin, Document, Query, UpdateOperation, IDatabase } from '@nebula/core';
+import { Plugin, Document, Query, UpdateOperation, IDatabase } from '@nebula-db/core';
 import { io, Socket } from 'socket.io-client';
 import { v4 as uuidv4 } from 'uuid';
 

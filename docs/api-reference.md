@@ -17,7 +17,7 @@ Creates a new database instance.
 
 **Example:**
 ```typescript
-import { createDb } from '@nebula/core';
+import { createDb } from '@nebula-db/core';
 import { MemoryAdapter } from '@nebula/adapter-memory';
 
 const db = createDb({ adapter: new MemoryAdapter() });
@@ -170,69 +170,3 @@ type Document = {
 ```
 
 ### `Query`
-
-```typescript
-type Query = {
-  [key: string]: QueryCondition | any;
-} | LogicalQuery;
-```
-
-### `UpdateOperation`
-
-```typescript
-type UpdateOperation = {
-  [K in UpdateOperator]?: {
-    [key: string]: any;
-  };
-};
-```
-
-### `CollectionOptions`
-
-```typescript
-interface CollectionOptions {
-  schema?: any; // Optional schema for validation
-}
-```
-
-### `DbOptions`
-
-```typescript
-interface DbOptions {
-  adapter: Adapter;
-  plugins?: Plugin[];
-}
-```
-
-### `Adapter`
-
-```typescript
-interface Adapter {
-  load(): Promise<Record<string, Document[]>>;
-  save(data: Record<string, Document[]>): Promise<void>;
-}
-```
-
-### `Plugin`
-
-```typescript
-interface Plugin {
-  name: string;
-  onInit?(db: any): void;
-  onCollectionCreate?(collection: any): void;
-  onBeforeInsert?(collection: string, doc: Document): Document | Promise<Document>;
-  onAfterInsert?(collection: string, doc: Document): void;
-  onBeforeUpdate?(collection: string, query: Query, update: UpdateOperation): [Query, UpdateOperation] | Promise<[Query, UpdateOperation]>;
-  onAfterUpdate?(collection: string, query: Query, update: UpdateOperation, affectedDocs: Document[]): void;
-  onBeforeDelete?(collection: string, query: Query): Query | Promise<Query>;
-  onAfterDelete?(collection: string, query: Query, deletedDocs: Document[]): void;
-  onBeforeQuery?(collection: string, query: Query): Query | Promise<Query>;
-  onAfterQuery?(collection: string, query: Query, results: Document[]): Document[] | Promise<Document[]>;
-}
-```
-
-### `SubscriptionCallback`
-
-```typescript
-type SubscriptionCallback = (docs: Document[]) => void;
-```
