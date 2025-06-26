@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/plugin-sync",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Synchronization plugin for NebulaDB",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

@@ -1,6 +1,6 @@
 {
   "name": "@nebula-db/adapter-memory",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "In-memory adapter for NebulaDB",
   "repository": {
     "type": "git",
