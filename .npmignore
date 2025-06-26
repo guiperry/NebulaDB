@@ -1,3 +1,9 @@
+# Ignore all SVG and PNG files except logo files
+*.svg
+*.png
+!**/logo.svg
+!**/nebulalogo.png
+
 # Source files
 src/
 tests/

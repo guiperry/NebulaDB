@@ -1,7 +1,9 @@
 {
+  "name": "@nebula-db/adapter-indexeddb",
+  "version": "0.2.3",
   "files": [
     "dist",
     "README.md",
     "LICENSE"
   ]
-} 
+}

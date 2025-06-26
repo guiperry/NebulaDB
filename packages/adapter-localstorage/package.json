@@ -1,7 +1,9 @@
 {
+  "name": "@nebula-db/adapter-localstorage",
+  "version": "0.2.3",
   "files": [
     "dist",
     "README.md",
     "LICENSE"
   ]
-} 
+}
