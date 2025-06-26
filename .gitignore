@@ -82,3 +82,10 @@ local/
 !.yarn/sdks
 !.yarn/versions
 .pnp.*
+
+# New additions
+yarn.lock
+pnpm-lock.yaml
+.history/
+packages/*/dist/
+packages/*/build/

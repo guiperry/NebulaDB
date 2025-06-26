@@ -58,3 +58,21 @@ __mocks__/
 # macOS
 .DS_Store
 ._*
+
+# Additional files
+.gitignore
+.npmignore
+.env*
+.history/
+*.sh
+*.tgz
+*.vsix
+.cache/
+.nyc_output/
+test-results/
+junit.xml
+local/
+.pnp.*
+yarn.lock
+pnpm-lock.yaml
+package-lock.json
