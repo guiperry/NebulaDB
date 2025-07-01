@@ -1,4 +1,4 @@
-import { Adapter, Document, Query, UpdateOperation, IDatabase } from '@nebula-db/core';
+import { Adapter, Document, Query, UpdateOperation, Database } from '@nebula-db/core';
 
 // Import WASM module
 let wasmModule: any;
@@ -93,7 +93,7 @@ export class WasmAdapter implements Adapter {
 /**
  * WASM-optimized database implementation
  */
-export class WasmDatabase implements IDatabase {
+export class WasmDatabase implements Database {
   private adapter: WasmAdapter;
   private collections: Map<string, WasmCollection> = new Map();
   

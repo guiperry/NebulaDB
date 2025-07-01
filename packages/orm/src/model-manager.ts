@@ -1,15 +1,15 @@
-import { IDatabase, ICollection, Document } from '@nebula-db/core';
+import { Database, ICollection, Document } from '@nebula-db/core';
 import { MODEL_META_KEY, FIELD_META_KEY, INDEX_META_KEY } from './decorators';
 
 /**
  * Model manager for handling ORM operations
  */
 export class ModelManager {
-  private db: IDatabase;
+  private db: Database;
   private models: Map<string, any> = new Map();
   private collections: Map<string, ICollection> = new Map();
 
-  constructor(db: IDatabase) {
+  constructor(db: Database) {
     this.db = db;
   }
 

@@ -1,4 +1,4 @@
-import { IDatabase, Document, Query, UpdateOperation } from '@nebula-db/core';
+import { Database, Document, Query, UpdateOperation } from '@nebula-db/core';
 import { io } from 'socket.io-client';
 import { ConnectionOptions, EventType, Event, DatabaseSnapshot } from './types';
 import { createMigrationPlugin } from '../../../packages/plugins/migration/src';
@@ -6,7 +6,7 @@ import { createMigrationPlugin } from '../../../packages/plugins/migration/src';
 /**
  * Create a connection to the DevTools server
  */
-export function createDevtoolsConnection(db: IDatabase, options: ConnectionOptions) {
+export function createDevtoolsConnection(db: Database, options: ConnectionOptions) {
   const { port } = options;
 
   // Connect to DevTools server

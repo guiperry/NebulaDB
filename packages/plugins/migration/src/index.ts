@@ -1,4 +1,4 @@
-import { Plugin, IDatabase, Document } from '@nebula-db/core';
+import { Plugin, Database, Document } from '@nebula-db/core';
 
 /**
  * Migration definition
@@ -22,12 +22,12 @@ export interface Migration {
   /**
    * Function to apply the migration
    */
-  up(db: IDatabase): Promise<void>;
+  up(db: Database): Promise<void>;
   
   /**
    * Optional function to revert the migration
    */
-  down?(db: IDatabase): Promise<void>;
+  down?(db: Database): Promise<void>;
 }
 
 /**
@@ -72,7 +72,7 @@ export function createMigrationPlugin(options: MigrationPluginOptions): Plugin {
     logger = console.log
   } = options;
   
-  let db: IDatabase;
+  let db: Database;
   
   /**
    * Get applied migrations
@@ -158,7 +158,7 @@ export function createMigrationPlugin(options: MigrationPluginOptions): Plugin {
   /**
    * Get the current schema version for a collection
    */
-  async function getSchemaVersion(db: IDatabase, collectionName: string): Promise<number> {
+  async function getSchemaVersion(db: Database, collectionName: string): Promise<number> {
     const migrationCollection = db.collection('_migrations');
     const migrations = await migrationCollection.find({ collection: collectionName });
     if (!migrations.length) return 0;
@@ -168,7 +168,7 @@ export function createMigrationPlugin(options: MigrationPluginOptions): Plugin {
   /**
    * Set the current schema version for a collection (forcibly, e.g. after manual migration)
    */
-  async function setSchemaVersion(db: IDatabase, collectionName: string, version: number): Promise<void> {
+  async function setSchemaVersion(db: Database, collectionName: string, version: number): Promise<void> {
     const migrationCollection = db.collection('_migrations');
     await migrationCollection.insert({ collection: collectionName, version, appliedAt: new Date().toISOString() });
   }
@@ -176,7 +176,7 @@ export function createMigrationPlugin(options: MigrationPluginOptions): Plugin {
   return {
     name: 'migration',
     
-    onInit(database: IDatabase): void {
+    onInit(database: Database): void {
       db = database;
       
       // Apply migrations automatically if enabled

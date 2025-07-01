@@ -1,6 +1,6 @@
 import { Collection } from './collection';
 import {
-  Database as IDatabase,
+  Database,
   ICollection,
   DbOptions,
   CollectionOptions,
@@ -8,9 +8,7 @@ import {
   Plugin
 } from './types';
 
-export type { IDatabase } from './types';
-
-export class Database implements IDatabase {
+export class Database implements Database {
   collections: Map<string, ICollection> = new Map();
   adapter: Adapter;
   plugins: Plugin[];
@@ -87,6 +85,6 @@ export class Database implements IDatabase {
 /**
  * Create a new database instance
  */
-export function createDb(options: DbOptions): IDatabase {
+export function createDb(options: DbOptions): Database {
   return new Database(options);
 }

@@ -1,4 +1,4 @@
-import { Plugin, Document, Query, UpdateOperation, IDatabase } from '@nebula-db/core';
+import { Plugin, Document, Query, UpdateOperation, Database } from '@nebula-db/core';
 import { io, Socket } from 'socket.io-client';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -188,7 +188,7 @@ export function createSyncPlugin(options: SyncPluginOptions): Plugin {
   let socket: Socket | null = null;
 
   // Database reference
-  let db: IDatabase | null = null;
+  let db: Database | null = null;
 
   // Sync state
   let syncEnabled = autoSync;

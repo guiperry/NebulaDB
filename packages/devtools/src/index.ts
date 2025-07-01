@@ -1,11 +1,11 @@
-import { IDatabase } from '@nebula-db/core';
+import { Database } from '@nebula-db/core';
 import { createDevtoolsConnection } from './connection';
 import { DevtoolsOptions } from './types';
 
 /**
  * Initialize NebulaDB DevTools
  */
-export function initDevtools(db: IDatabase, options: DevtoolsOptions = {}) {
+export function initDevtools(db: Database, options: DevtoolsOptions = {}) {
   const { port = 3333, autoOpen = true } = options;
   
   // Create connection to DevTools
