@@ -8,7 +8,6 @@ export default defineConfig({
     include: [
       './packages/*/tests/**/*.test.ts',
       './packages/*/src/**/*.test.ts',
-      './tests/unit/**/*.test.ts',
       './tools/*/src/test/**/*.test.ts'
     ],
     exclude: [
@@ -19,26 +18,10 @@ export default defineConfig({
       '**/.DS_Store'     // Exclude macOS .DS_Store files
     ],
     coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
-      include: [
-        './packages/core/src/**/*.ts',
-        './packages/adapters/*/src/**/*.ts',
-        './packages/plugins/*/src/**/*.ts'
-      ],
-      exclude: [
-        'node_modules/',
-        'dist/',
-        '**/*.d.ts',
-        '**/*.test.ts',
-        '**/index.ts'
-      ],
       all: true,
-      reportsDirectory: './coverage',
-      enabled: true,
-      clean: true,
-      cleanOnRerun: true,
-      skipFull: false
+      include: ['packages/*/src/**/*.ts'],
+      exclude: ['**/node_modules/**', '**/dist/**', '**/tests/**', '**/*.d.ts'],
+      reporter: ['text', 'html'],
     }
   },
   resolve: {

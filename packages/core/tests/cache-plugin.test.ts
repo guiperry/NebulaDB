@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { createDb } from '../../packages/core/src';
-import { MemoryAdapter } from '../../packages/adapters/memory/src';
-import { createCachePlugin } from '../../packages/plugins/cache/src';
+import { createDb, MemoryAdapter } from '../src';
+import { createCachePlugin } from '../../../packages/plugins/cache/src';
 
 describe('CachePlugin', () => {
   let db: any;

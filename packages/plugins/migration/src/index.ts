@@ -15,6 +15,11 @@ export interface Migration {
   name: string;
   
   /**
+   * Collection name this migration applies to
+   */
+  collection: string;
+  
+  /**
    * Function to apply the migration
    */
   up(db: IDatabase): Promise<void>;
@@ -72,9 +77,9 @@ export function createMigrationPlugin(options: MigrationPluginOptions): Plugin {
   /**
    * Get applied migrations
    */
-  async function getAppliedMigrations(): Promise<Document[]> {
+  async function getAppliedMigrations(collectionName: string): Promise<Document[]> {
     const collection = db.collection(migrationCollection);
-    return await collection.find({});
+    return await collection.find({ collection: collectionName });
   }
   
   /**
@@ -83,6 +88,7 @@ export function createMigrationPlugin(options: MigrationPluginOptions): Plugin {
   async function markMigrationApplied(migration: Migration): Promise<void> {
     const collection = db.collection(migrationCollection);
     await collection.insert({
+      collection: migration.collection,
       version: migration.version,
       name: migration.name,
       appliedAt: new Date().toISOString()
@@ -94,46 +100,32 @@ export function createMigrationPlugin(options: MigrationPluginOptions): Plugin {
    */
   async function markMigrationReverted(migration: Migration): Promise<void> {
     const collection = db.collection(migrationCollection);
-    await collection.delete({ version: migration.version });
+    await collection.delete({ collection: migration.collection, version: migration.version });
   }
   
   /**
    * Apply pending migrations
    */
   async function applyMigrations(): Promise<void> {
-    // Get applied migrations
-    // const appliedMigrations = await getAppliedMigrations();
-    const appliedVersions = new Set(appliedMigrations.map(m => m.version));
-    
-    // Sort migrations by version
-    const pendingMigrations = migrations
-      .filter(m => !appliedVersions.has(m.version))
-      .sort((a, b) => a.version - b.version);
-    
-    if (pendingMigrations.length === 0) {
-      logger(`No pending migrations to apply.`);
-      return;
-    }
-    
-    logger(`Applying ${pendingMigrations.length} pending migrations...`);
-    
-    // Apply each migration
-    for (const migration of pendingMigrations) {
-      try {
-        logger(`Applying migration: ${migration.name} (${migration.version})`);
-        await migration.up(db);
-        await markMigrationApplied(migration);
-        logger(`Migration applied: ${migration.name}`);
-      } catch (error) {
-        logger(`Migration failed: ${migration.name}`);
-        logger(`Error: ${error}`);
-        
-        if (throwOnError) {
-          throw error;
+    // Get applied migrations for each migration's collection
+    for (const migration of migrations) {
+      const appliedMigrations = await getAppliedMigrations(migration.collection);
+      const appliedVersions = new Set(appliedMigrations.map(m => m.version));
+      if (!appliedVersions.has(migration.version)) {
+        try {
+          logger(`Applying migration: ${migration.name} (${migration.version})`);
+          await migration.up(db);
+          await markMigrationApplied(migration);
+          logger(`Migration applied: ${migration.name}`);
+        } catch (error) {
+          logger(`Migration failed: ${migration.name}`);
+          logger(`Error: ${error}`);
+          if (throwOnError) {
+            throw error;
+          }
         }
       }
     }
-    
     logger(`Migrations completed.`);
   }
   
@@ -141,51 +133,44 @@ export function createMigrationPlugin(options: MigrationPluginOptions): Plugin {
    * Revert migrations
    */
   async function revertMigrations(targetVersion?: number): Promise<void> {
-    // Get applied migrations
-    // const appliedMigrations = await getAppliedMigrations();
-    
-    // Sort migrations by version in descending order
-    const migrationsToRevert = migrations
-      .filter(m => {
-        // If targetVersion is specified, only revert migrations with version > targetVersion
-        if (targetVersion !== undefined) {
-          return m.version > targetVersion;
-        }
-        // Otherwise, revert all migrations
-        return true;
-      })
-      .sort((a, b) => b.version - a.version); // Descending order
-    
-    if (migrationsToRevert.length === 0) {
-      logger(`No migrations to revert.`);
-      return;
-    }
-    
-    logger(`Reverting ${migrationsToRevert.length} migrations...`);
-    
-    // Revert each migration
-    for (const migration of migrationsToRevert) {
-      if (!migration.down) {
-        logger(`Skipping migration ${migration.name} (${migration.version}): No down function`);
-        continue;
-      }
-      
-      try {
-        logger(`Reverting migration: ${migration.name} (${migration.version})`);
-        await migration.down(db);
-        await markMigrationReverted(migration);
-        logger(`Migration reverted: ${migration.name}`);
-      } catch (error) {
-        logger(`Migration revert failed: ${migration.name}`);
-        logger(`Error: ${error}`);
-        
-        if (throwOnError) {
-          throw error;
+    // Revert migrations for each collection
+    for (const migration of migrations) {
+      const appliedMigrations = await getAppliedMigrations(migration.collection);
+      const appliedVersions = new Set(appliedMigrations.map(m => m.version));
+      if (appliedVersions.has(migration.version) && migration.down) {
+        try {
+          logger(`Reverting migration: ${migration.name} (${migration.version})`);
+          await migration.down(db);
+          await markMigrationReverted(migration);
+          logger(`Migration reverted: ${migration.name}`);
+        } catch (error) {
+          logger(`Migration revert failed: ${migration.name}`);
+          logger(`Error: ${error}`);
+          if (throwOnError) {
+            throw error;
+          }
         }
       }
     }
-    
     logger(`Migration revert completed.`);
+  }
+  
+  /**
+   * Get the current schema version for a collection
+   */
+  async function getSchemaVersion(db: IDatabase, collectionName: string): Promise<number> {
+    const migrationCollection = db.collection('_migrations');
+    const migrations = await migrationCollection.find({ collection: collectionName });
+    if (!migrations.length) return 0;
+    return Math.max(...migrations.map(m => m.version));
+  }
+  
+  /**
+   * Set the current schema version for a collection (forcibly, e.g. after manual migration)
+   */
+  async function setSchemaVersion(db: IDatabase, collectionName: string, version: number): Promise<void> {
+    const migrationCollection = db.collection('_migrations');
+    await migrationCollection.insert({ collection: collectionName, version, appliedAt: new Date().toISOString() });
   }
   
   return {
@@ -208,6 +193,8 @@ export function createMigrationPlugin(options: MigrationPluginOptions): Plugin {
     // Expose migration functions on the plugin
     applyMigrations,
     revertMigrations,
-    getAppliedMigrations
+    getAppliedMigrations,
+    getSchemaVersion,
+    setSchemaVersion
   };
 }

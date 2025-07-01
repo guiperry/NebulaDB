@@ -3,10 +3,6 @@
   "version": "0.2.3",
   "description": "Fast. Flexible. Serverless. The embedded database for the modern stack.",
   "private": true,
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Nom-nom-hub/NebulaDB.git"
-  },
   "workspaces": [
     "packages/*",
     "packages/adapters/*",
@@ -19,65 +15,22 @@
     "build": "./scripts/build.sh",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "cd tests && npm run test:coverage",
+    "test:coverage": "vitest run --coverage --coverage.provider=v8",
     "test:basic": "node tests/basic-test.js",
     "benchmark": "node benchmark.js",
     "lint": "eslint . --ext .ts",
-    "format": "prettier --write \"**/*.{ts,js,json,md}\"",
-    "docs": "cd docs && npm run build",
-    "example:node": "cd examples/node-demo && npm start",
-    "example:browser": "cd examples/browser-demo && npm run dev",
-    "website:dev": "cd website && npm run dev",
-    "website:build": "cd website && npm run build",
-    "website:preview": "cd website && npm run preview",
-    "publish:core": "cd packages/core && npm publish --access public",
-    "publish:adapters": "for dir in packages/adapters/*; do (cd $dir && npm publish --access public); done",
-    "publish:plugins": "for dir in packages/plugins/*; do (cd $dir && npm publish --access public); done",
-    "publish:all": "npm run publish:core && npm run publish:adapters && npm run publish:plugins"
+    "format": "prettier --write \"**/*.{ts,js,json,md}\""
   },
-  "keywords": [
-    "database",
-    "nosql",
-    "embedded",
-    "typescript",
-    "reactive",
-    "browser",
-    "node",
-    "edge"
-  ],
-  "author": "Nom-nom-hub",
-  "license": "MIT",
   "engines": {
     "node": ">=18.0.0"
   },
   "devDependencies": {
-    "@flash-install/cli": "^1.3.6",
-    "@types/better-sqlite3": "^7.6.13",
-    "@types/ioredis": "^4.28.10",
     "@types/node": "^20.19.1",
-    "@types/socket.io-client": "^1.4.36",
-    "@types/uuid": "^10.0.0",
-    "@typescript-eslint/eslint-plugin": "^6.19.1",
-    "@typescript-eslint/parser": "^6.19.1",
     "@vitest/coverage-v8": "^3.1.2",
-    "archiver": "^7.0.1",
-    "archiver-utils": "^5.0.2",
-    "eslint": "^8.56.0",
-    "file-entry-cache": "^10.0.8",
-    "flat-cache": "^6.1.8",
-    "prettier": "^3.2.4",
-    "rimraf": "^6.0.1",
-    "ts-node": "^10.9.2",
-    "tsup": "^8.0.1",
     "typescript": "^5.3.3",
     "vitest": "^3.1.2"
   },
   "dependencies": {
-    "esbuild": "^0.25.3",
-    "glob": "^11.0.2",
-    "inflight": "^1.0.6",
-    "marked": "^15.0.9",
-    "reflect-metadata": "^0.2.2",
-    "vite": "6.3.3"
+    "better-sqlite3": "^12.1.1"
   }
 }

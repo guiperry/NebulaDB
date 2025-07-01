@@ -4,6 +4,7 @@ import { Event, EventType } from '../types';
 interface PluginMonitorProps {
   events: Event[];
   plugins?: string[];
+  migrationHistory?: Record<string, any[]>;
 }
 
 interface PluginEvent {
@@ -12,7 +13,7 @@ interface PluginEvent {
   duration?: number;
 }
 
-export function PluginMonitor({ events, plugins = [] }: PluginMonitorProps) {
+export function PluginMonitor({ events, plugins = [], migrationHistory = {} }: PluginMonitorProps) {
   const [pluginEvents, setPluginEvents] = useState<PluginEvent[]>([]);
   const [selectedPlugin, setSelectedPlugin] = useState<string>('all');
   
@@ -83,6 +84,27 @@ export function PluginMonitor({ events, plugins = [] }: PluginMonitorProps) {
     <div className="bg-white dark:bg-nebula-800 rounded-lg shadow overflow-hidden">
       <div className="p-4 border-b border-gray-200 dark:border-nebula-700">
         <h2 className="text-lg font-semibold text-nebula-900 dark:text-white">Plugin Monitor</h2>
+        {Object.keys(migrationHistory).length > 0 && (
+          <div className="mt-2">
+            <span className="text-xs font-semibold text-nebula-700 dark:text-nebula-300">Migration History:</span>
+            <ul className="text-xs text-nebula-600 dark:text-nebula-400 ml-2">
+              {Object.entries(migrationHistory).map(([col, migrations]) => (
+                <li key={col} className="mb-1">
+                  <span className="font-semibold">{col}:</span>
+                  {migrations.length === 0 ? (
+                    <span className="ml-1">No migrations</span>
+                  ) : (
+                    <ul className="ml-2">
+                      {migrations.map((m, i) => (
+                        <li key={i}>v{m.version} - {m.name} ({m.appliedAt})</li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
       
       <div className="p-4 border-b border-gray-200 dark:border-nebula-700">

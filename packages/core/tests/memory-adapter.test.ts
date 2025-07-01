@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { MemoryAdapter } from '../../packages/adapters/memory/src';
+import { MemoryAdapter } from '../src';
 
 describe('MemoryAdapter', () => {
   it('should load and save data', async () => {

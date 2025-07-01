@@ -1,6 +1,4 @@
-import { createDb } from '../../packages/core/src';
-import { MemoryAdapter } from '../../packages/adapters/memory/src';
-import { SQLiteAdapter } from '../../packages/adapters/sqlite/src';
+import { createDb, MemoryAdapter, SQLiteAdapter } from '../../packages/core/src';
 import { performance } from 'perf_hooks';
 import * as fs from 'fs';
 import * as path from 'path';

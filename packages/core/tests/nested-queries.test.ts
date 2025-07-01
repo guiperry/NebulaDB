@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createDb } from '@nebula-db/core';
-import { MemoryAdapter } from '@nebula/adapter-memory';
+import { createDb, MemoryAdapter } from '../src';
 
 describe('Nested Queries', () => {
   let db;

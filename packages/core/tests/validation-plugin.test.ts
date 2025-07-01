@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { createDb } from '../../packages/core/src';
-import { MemoryAdapter } from '../../packages/adapters/memory/src';
-import { createValidationPlugin } from '../../packages/plugins/validation/src';
+import { createDb, MemoryAdapter } from '../src';
+import { createValidationPlugin } from '../../../packages/plugins/validation/src';
 import { z } from 'zod';
+import { createMigrationPlugin } from '../../../packages/plugins/migration/src';
 
 describe('ValidationPlugin', () => {
   it('should validate documents on insert', async () => {
@@ -109,5 +109,36 @@ describe('ValidationPlugin', () => {
     await expect(posts.insert({
       title: 'Hello World'
     })).rejects.toThrow('No schema defined for collection "posts" and strict mode is enabled');
+  });
+});
+
+describe('Migration Plugin Schema Version Helpers', () => {
+  it('should return 0 for new collection', async () => {
+    const plugin = createMigrationPlugin({ migrations: [] });
+    const db = createDb({ adapter: new MemoryAdapter(), plugins: [plugin] });
+    await db.init?.();
+    const version = await plugin.getSchemaVersion(db, 'test');
+    expect(version).toBe(0);
+  });
+
+  it('should return highest applied migration version', async () => {
+    const plugin = createMigrationPlugin({ migrations: [
+      { version: 1, name: 'v1', collection: 'test', up: async db => {} },
+      { version: 2, name: 'v2', collection: 'test', up: async db => {} }
+    ] });
+    const db = createDb({ adapter: new MemoryAdapter(), plugins: [plugin] });
+    await db.init?.();
+    await plugin.applyMigrations();
+    const version = await plugin.getSchemaVersion(db, 'test');
+    expect(version).toBe(2);
+  });
+
+  it('should forcibly set schema version', async () => {
+    const plugin = createMigrationPlugin({ migrations: [] });
+    const db = createDb({ adapter: new MemoryAdapter(), plugins: [plugin] });
+    await db.init?.();
+    await plugin.setSchemaVersion(db, 'test', 5);
+    const version = await plugin.getSchemaVersion(db, 'test');
+    expect(version).toBe(5);
   });
 });

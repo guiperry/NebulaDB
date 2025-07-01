@@ -51,9 +51,10 @@ export class EnhancedNestedQueryOptimizer {
   /**
    * Optimizes a query by reordering conditions for better performance
    * @param query The query to optimize
+   * @param indexedFields Optional set of indexed field names
    * @returns An optimized version of the query
    */
-  static optimizeQuery(query: QueryCondition): QueryCondition {
+  static optimizeQuery(query: QueryCondition, indexedFields?: Set<string>): QueryCondition {
     if (!query || typeof query !== 'object') {
       return query;
     }
@@ -61,11 +62,16 @@ export class EnhancedNestedQueryOptimizer {
     // Handle $and operator
     if (query.$and && Array.isArray(query.$and)) {
       // Optimize each condition in the $and array
-      const optimizedConditions = query.$and.map((condition: QueryCondition) => this.optimizeQuery(condition));
+      const optimizedConditions = query.$and.map((condition: QueryCondition) => this.optimizeQuery(condition, indexedFields));
 
-      // Reorder conditions by selectivity (exact match first, then range, then regex)
+      // Reorder conditions: indexed fields first, then by selectivity
       optimizedConditions.sort((a: QueryCondition, b: QueryCondition) => {
-        return this.getConditionSelectivity(a) - this.getConditionSelectivity(b);
+        const aField = Object.keys(a)[0];
+        const bField = Object.keys(b)[0];
+        const aIndexed = indexedFields?.has(aField) ? 0 : 1;
+        const bIndexed = indexedFields?.has(bField) ? 0 : 1;
+        if (aIndexed !== bIndexed) return aIndexed - bIndexed;
+        return this.getConditionSelectivity(a, indexedFields) - this.getConditionSelectivity(b, indexedFields);
       });
 
       // Merge compatible conditions
@@ -77,7 +83,7 @@ export class EnhancedNestedQueryOptimizer {
     // Handle $or operator
     if (query.$or && Array.isArray(query.$or)) {
       // Optimize each condition in the $or array
-      const optimizedConditions = query.$or.map((condition: QueryCondition) => this.optimizeQuery(condition));
+      const optimizedConditions = query.$or.map((condition: QueryCondition) => this.optimizeQuery(condition, indexedFields));
       return { $or: optimizedConditions };
     }
 
@@ -85,7 +91,7 @@ export class EnhancedNestedQueryOptimizer {
     const result: QueryCondition = {};
     for (const [key, value] of Object.entries(query)) {
       if (typeof value === 'object' && value !== null) {
-        result[key] = this.optimizeQuery(value);
+        result[key] = this.optimizeQuery(value, indexedFields);
       } else {
         result[key] = value;
       }
@@ -97,12 +103,18 @@ export class EnhancedNestedQueryOptimizer {
   /**
    * Get the selectivity score of a condition (lower is more selective)
    * @param condition The condition to evaluate
+   * @param indexedFields Optional set of indexed field names
    * @returns A selectivity score (lower means more selective)
    */
-  private static getConditionSelectivity(condition: QueryCondition): number {
+  private static getConditionSelectivity(condition: QueryCondition, indexedFields?: Set<string>): number {
+    // Prefer indexed fields
+    const field = Object.keys(condition)[0];
+    if (indexedFields?.has(field)) {
+      return 0;
+    }
     // Exact equality is most selective
     if (typeof condition === 'string' || typeof condition === 'number' || typeof condition === 'boolean') {
-      return 0;
+      return 1;
     }
 
     // Check for operators
@@ -111,26 +123,26 @@ export class EnhancedNestedQueryOptimizer {
         const operators = value as QueryOperators;
         // Check for equality operator
         if (operators.$eq !== undefined) {
-          return 1;
+          return 2;
         }
         // Check for in list operator
         if (operators.$in !== undefined) {
-          return 2;
+          return 3;
         }
         // Check for range operators
         if (operators.$gt !== undefined || operators.$lt !== undefined ||
             operators.$gte !== undefined || operators.$lte !== undefined) {
-          return 3;
+          return 4;
         }
         // Check for regex operator (least selective)
         if (operators.$regex !== undefined) {
-          return 4;
+          return 5;
         }
       }
     }
 
     // Default selectivity for other conditions
-    return 5;
+    return 6;
   }
 
   /**

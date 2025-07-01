@@ -5,11 +5,13 @@ import ReactJson from 'react-json-view';
 interface CollectionViewerProps {
   name: string;
   documents: Document[];
+  indexes?: any[];
+  schemaVersion?: number;
   onEdit?: (doc: Document) => void;
   onDelete?: (doc: Document) => void;
 }
 
-export function CollectionViewer({ name, documents, onEdit, onDelete }: CollectionViewerProps) {
+export function CollectionViewer({ name, documents, indexes = [], schemaVersion, onEdit, onDelete }: CollectionViewerProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortField, setSortField] = useState<string>('id');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
@@ -72,6 +74,19 @@ export function CollectionViewer({ name, documents, onEdit, onDelete }: Collecti
       <div className="p-4 border-b border-gray-200 dark:border-nebula-700">
         <h2 className="text-lg font-semibold text-nebula-900 dark:text-white">{name}</h2>
         <p className="text-sm text-nebula-600 dark:text-nebula-400">{documents.length} documents</p>
+        {typeof schemaVersion === 'number' && (
+          <p className="text-xs text-nebula-500 dark:text-nebula-400 mt-1">Schema Version: {schemaVersion}</p>
+        )}
+        {indexes.length > 0 && (
+          <div className="mt-2">
+            <span className="text-xs font-semibold text-nebula-700 dark:text-nebula-300">Indexes:</span>
+            <ul className="text-xs text-nebula-600 dark:text-nebula-400 ml-2">
+              {indexes.map((idx, i) => (
+                <li key={i}>{idx.name} ({idx.type}): [{idx.fields.join(', ')}]</li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
       
       <div className="p-4 border-b border-gray-200 dark:border-nebula-700">

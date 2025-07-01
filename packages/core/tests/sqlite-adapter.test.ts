@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { createDb } from '../../packages/core/src';
-import { SQLiteAdapter } from '../../packages/adapters/sqlite/src';
+import { createDb, SQLiteAdapter } from '../src';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';

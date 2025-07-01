@@ -1,6 +1,7 @@
 import { IDatabase, Document, Query, UpdateOperation } from '@nebula-db/core';
 import { io } from 'socket.io-client';
 import { ConnectionOptions, EventType, Event, DatabaseSnapshot } from './types';
+import { createMigrationPlugin } from '../../../packages/plugins/migration/src';
 
 /**
  * Create a connection to the DevTools server
@@ -39,24 +40,34 @@ export function createDevtoolsConnection(db: IDatabase, options: ConnectionOptio
   async function sendSnapshot() {
     try {
       const collections: Record<string, Document[]> = {};
-
-      // Get all collections
+      const indexes: Record<string, any[]> = {};
+      const schemaVersions: Record<string, number> = {};
+      const migrationHistory: Record<string, Document[]> = {};
+      const migrationPlugin = db.plugins.find(p => p.name === 'migration');
       for (const [name, collection] of db.collections.entries()) {
         if (typeof collection.find === 'function') {
           collections[name] = await collection.find();
+          if (typeof collection.getIndexes === 'function') {
+            indexes[name] = collection.getIndexes();
+          }
+          if (migrationPlugin && migrationPlugin.getSchemaVersion) {
+            schemaVersions[name] = await migrationPlugin.getSchemaVersion(db, name);
+          }
+          // Migration history
+          if (db.collection && typeof db.collection === 'function') {
+            const migrationsCol = db.collection('_migrations');
+            migrationHistory[name] = await migrationsCol.find({ collection: name });
+          }
         }
       }
-
-      // Create snapshot
-      const snapshot: DatabaseSnapshot = {
+      const snapshot: any = {
         collections,
+        indexes,
+        schemaVersions,
+        migrationHistory,
         timestamp: Date.now()
       };
-
-      // Send snapshot to DevTools
       socket.emit('snapshot', snapshot);
-
-      // Send init event
       sendEvent({
         type: EventType.INIT,
         timestamp: Date.now(),

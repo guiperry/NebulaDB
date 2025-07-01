@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createDb, IndexType } from '../../packages/core/src';
-import { MemoryAdapter } from '../../packages/adapters/memory/src';
+import { createDb, IndexType, MemoryAdapter } from '../src';
 
 describe('NebulaDB Indexing', () => {
   let db: any;
@@ -198,6 +197,104 @@ describe('NebulaDB Indexing', () => {
       // The indexed query should be faster, but in tests the difference might be small
       // We're just checking that it works, not the actual performance difference
       expect(timeWithIndex).toBeLessThanOrEqual(timeWithoutIndex * 1.5);
+    });
+  });
+
+  describe('Compound Index Partial/Range Queries', () => {
+    beforeEach(async () => {
+      await users.insert({ name: 'Alice', country: 'USA', city: 'New York', age: 30 });
+      await users.insert({ name: 'Bob', country: 'USA', city: 'Boston', age: 25 });
+      await users.insert({ name: 'Charlie', country: 'UK', city: 'London', age: 35 });
+      await users.insert({ name: 'Diana', country: 'USA', city: 'Boston', age: 40 });
+      await users.insert({ name: 'Eve', country: 'USA', city: 'New York', age: 22 });
+      users.createIndex({
+        name: 'country_city_age_idx',
+        fields: ['country', 'city', 'age'],
+        type: IndexType.COMPOUND
+      });
+    });
+
+    it('should use compound index for prefix query (country only)', async () => {
+      const results = await users.find({ country: 'USA' });
+      expect(results.length).toBe(4);
+      expect(results.map(u => u.name).sort()).toEqual(['Alice', 'Bob', 'Diana', 'Eve']);
+    });
+
+    it('should use compound index for prefix query (country + city)', async () => {
+      const results = await users.find({ country: 'USA', city: 'Boston' });
+      expect(results.length).toBe(2);
+      expect(results.map(u => u.name).sort()).toEqual(['Bob', 'Diana']);
+    });
+
+    it('should use compound index for prefix + range query (country + city + age >= 30)', async () => {
+      const results = await users.find({ country: 'USA', city: 'Boston', age: { $gte: 30 } });
+      expect(results.length).toBe(1);
+      expect(results[0].name).toBe('Diana');
+    });
+
+    it('should use compound index for prefix + range query (country + city + age < 30)', async () => {
+      const results = await users.find({ country: 'USA', city: 'Boston', age: { $lt: 30 } });
+      expect(results.length).toBe(1);
+      expect(results[0].name).toBe('Bob');
+    });
+
+    it('should use compound index for prefix + $in query (country + city + age in [25, 40])', async () => {
+      const results = await users.find({ country: 'USA', city: 'Boston', age: { $in: [25, 40] } });
+      expect(results.length).toBe(2);
+      expect(results.map(u => u.name).sort()).toEqual(['Bob', 'Diana']);
+    });
+
+    it('should use compound index for prefix + range query (country + city >= "London")', async () => {
+      // This tests string range on city
+      const results = await users.find({ country: 'USA', city: { $gte: 'London' } });
+      // Only New York and Boston in USA, so $gte 'London' matches New York
+      expect(results.length).toBe(2);
+      expect(results.map(u => u.city).sort()).toEqual(['New York', 'New York']);
+    });
+
+    it('should use compound index for multi-field range query (city and age)', async () => {
+      // Query for users in USA, city between 'A' and 'New York', age between 25 and 40
+      const results = await users.find({
+        country: 'USA',
+        city: { $gte: 'A', $lte: 'New York' },
+        age: { $gte: 25, $lte: 40 }
+      });
+      // Should match Alice (New York, 30), Bob (Boston, 25), Diana (Boston, 40), Eve (New York, 22 is out)
+      expect(results.map(u => u.name).sort()).toEqual(['Alice', 'Bob', 'Diana']);
+    });
+
+    it('should use compound index for multi-field range query (all fields)', async () => {
+      // Query for country >= 'UK', city >= 'A', age >= 30
+      const results = await users.find({
+        country: { $gte: 'UK' },
+        city: { $gte: 'A' },
+        age: { $gte: 30 }
+      });
+      // Should match all docs >= 'UK|A|30' (Charlie, Alice, Diana, Eve, Bob)
+      expect(results.length).toBe(3); // UK|London|35, USA|New York|30, USA|Boston|40
+      expect(results.map(u => u.name).sort()).toEqual(['Alice', 'Charlie', 'Diana']);
+    });
+
+    it('should use compound index for lower bound only on some fields', async () => {
+      // Query for country = 'USA', city >= 'Boston'
+      const results = await users.find({
+        country: 'USA',
+        city: { $gte: 'Boston' }
+      });
+      // Should match Alice (New York), Bob (Boston), Diana (Boston), Eve (New York)
+      expect(results.map(u => u.name).sort()).toEqual(['Alice', 'Bob', 'Diana', 'Eve']);
+    });
+
+    it('should use compound index for mix of eq and range on different fields', async () => {
+      // Query for country = 'USA', city = 'Boston', age < 40
+      const results = await users.find({
+        country: 'USA',
+        city: 'Boston',
+        age: { $lt: 40 }
+      });
+      // Should match Bob (Boston, 25)
+      expect(results.length).toBe(1);
+      expect(results[0].name).toBe('Bob');
     });
   });
 });

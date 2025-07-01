@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { createDb } from '../../packages/core/src';
-import { MemoryAdapter } from '../../packages/adapters/memory/src';
+import { createDb, MemoryAdapter } from '../src';
 
 describe('Data Corruption Recovery Tests', () => {
   let db: any;

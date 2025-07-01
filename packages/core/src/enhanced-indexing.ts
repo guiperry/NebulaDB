@@ -114,18 +114,20 @@ class BTreeNode<T> {
 
     for (let i = 0; i < this.keys.length; i++) {
       const key = this.keys[i];
-
-      // Check lower bound
-      if (start !== null && this.compareKeys(key, start) < (inclusive ? 0 : 1)) {
-        continue;
+      let lowerCheck = true;
+      let upperCheck = true;
+      if (start !== null && !(start === '' && typeof key === 'string')) {
+        lowerCheck = this.compareKeys(key, start) >= (inclusive ? 0 : 1);
       }
-
-      // Check upper bound
-      if (end !== null && this.compareKeys(key, end) > (inclusive ? 0 : -1)) {
-        break;
+      if (end !== null) {
+        upperCheck = this.compareKeys(key, end) <= (inclusive ? 0 : -1);
       }
-
-      // Add values to result
+      if (process.env.DEBUG_INDEX) {
+        // eslint-disable-next-line no-console
+        console.log('[BTreeNode.findRange]', { key, start, end, lowerCheck, upperCheck });
+      }
+      if (!lowerCheck) continue;
+      if (!upperCheck) break;
       result.push(...this.values[i]);
     }
 
@@ -239,6 +241,12 @@ export class EnhancedIndex {
    * Remove a document from the index
    */
   remove(doc: Document): void {
+    // Only remove if the doc was indexed (matched the partial filter)
+    if (this.options.partial && !this.matchesPartialFilter(doc)) {
+      // Not indexed, nothing to remove
+      return;
+    }
+
     // Get the keys for this document
     const keys = this.docToKeys.get(doc.id) || this.getIndexKeys(doc);
 
@@ -263,8 +271,20 @@ export class EnhancedIndex {
    * Update a document in the index
    */
   update(oldDoc: Document, newDoc: Document): void {
-    this.remove(oldDoc);
-    this.add(newDoc);
+    const oldMatched = this.matchesPartialFilter(oldDoc);
+    const newMatched = this.matchesPartialFilter(newDoc);
+    if (oldMatched && !newMatched) {
+      // Was indexed, should be removed
+      this.remove(oldDoc);
+    } else if (!oldMatched && newMatched) {
+      // Was not indexed, should be added
+      this.add(newDoc);
+    } else if (oldMatched && newMatched) {
+      // Was and remains indexed, update as usual
+      this.remove(oldDoc);
+      this.add(newDoc);
+    }
+    // If neither matched, do nothing
   }
 
   /**
@@ -273,152 +293,195 @@ export class EnhancedIndex {
   find(query: Query): Set<string> | null {
     // Check if the query can use this index
     const queryInfo = this.canUseIndex(query);
-
     if (!queryInfo) {
       return null; // Query can't use this index
     }
-
     const { operator, value } = queryInfo;
-
-    // Handle different operators
     let result: Set<string>;
-
+    let candidateIds: string[] = [];
     switch (operator) {
       case 'eq':
-        result = new Set(this.btree.find(value));
+        candidateIds = this.btree.find(value);
         break;
-
       case 'gt':
       case 'gte':
-        result = new Set(this.btree.findRange(value, null, operator === 'gte'));
+        candidateIds = this.btree.findRange(value, null, operator === 'gte');
         break;
-
       case 'lt':
-      case 'lte':
-        result = new Set(this.btree.findRange(null, value, operator === 'lte'));
+        candidateIds = this.btree.findRange(null, value, false);
         break;
-
+      case 'lte':
+        candidateIds = this.btree.findRange(null, value, true);
+        break;
       case 'in':
         if (Array.isArray(value)) {
-          result = new Set<string>();
+          candidateIds = [];
           for (const val of value) {
-            for (const id of this.btree.find(val)) {
-              result.add(id);
-            }
+            candidateIds.push(...this.btree.find(val));
           }
         } else {
-          result = new Set();
+          candidateIds = [];
         }
         break;
-
+      case 'prefix':
+        candidateIds = [];
+        for (let i = 0; i < this.btree.keys.length; i++) {
+          if (typeof this.btree.keys[i] === 'string' && this.btree.keys[i].startsWith(value)) {
+            candidateIds.push(...this.btree.values[i]);
+          }
+        }
+        break;
       case 'range':
         if (Array.isArray(value) && value.length === 2) {
-          result = new Set(this.btree.findRange(value[0], value[1], true));
+          candidateIds = this.btree.findRange(value[0], value[1], true);
         } else {
-          result = new Set();
+          candidateIds = [];
         }
         break;
-
       default:
         return null;
     }
-
-    // For partial indexes, we need to manually fix the test
-    // This is a temporary workaround for the failing test
-    if (this.name === 'active_users_idx' && this.options.partial &&
-        this.options.partial.filter &&
-        typeof this.options.partial.filter === 'object') {
-      // Check if the filter has an active property set to true
-      const filter = this.options.partial.filter as Record<string, any>;
-      if ('active' in filter && filter.active === true) {
-        // Hardcoded fix for the test case
-        const lastActiveCondition = query['lastActive'] as Record<string, any> | undefined;
-        if (lastActiveCondition &&
-            typeof lastActiveCondition === 'object' &&
-            '$gt' in lastActiveCondition) {
-          const date = lastActiveCondition.$gt;
-          if (date instanceof Date && date.getTime() > new Date('2022-12-31').getTime()) {
-            return new Set(['1', '2']);
-          }
-        }
-      }
+    // Debug output for candidate IDs
+    if (process.env.DEBUG_INDEX) {
+      // eslint-disable-next-line no-console
+      console.log('[EnhancedIndex.find] KEYS:', this.btree.keys);
+      // eslint-disable-next-line no-console
+      console.log('[EnhancedIndex.find]', { operator, value, candidateIds });
     }
-
-    return result;
+    // Post-filter using matchDocument for all non-eq queries
+    if (operator !== 'eq') {
+      // We need access to the document data to do this. Assume docToKeys has all doc ids, but we need the actual docs.
+      // This method currently only returns ids, so the caller (Collection) must still filter the docs.
+      // For now, return all candidate ids as a Set, and let the Collection filter. (If we had a doc map, we could filter here.)
+      // Optionally, if we had a doc map, we could:
+      // const filtered = candidateIds.filter(id => matchDocument(docMap[id], query));
+      // return new Set(filtered);
+      // But for now, just:
+      return new Set(candidateIds);
+    }
+    return new Set(candidateIds);
   }
 
   /**
    * Check if the query can use this index and extract query information
+   * Now supports multi-field range queries for compound indexes.
    */
   private canUseIndex(query: Query): { field: string, operator: string, value: any } | null {
     // For single field indexes
     if (this.fields.length === 1) {
       const field = this.fields[0];
-
-      // Check if the query is for this field
       if (field in query) {
         const condition = query[field as keyof typeof query];
-
-        // Simple equality
         if (typeof condition !== 'object' || condition === null) {
           return { field, operator: 'eq', value: condition };
         }
-
-        // Operator conditions
         if (condition.$eq !== undefined) {
           return { field, operator: 'eq', value: condition.$eq };
         }
-
         if (condition.$gt !== undefined) {
           return { field, operator: 'gt', value: condition.$gt };
         }
-
         if (condition.$gte !== undefined) {
           return { field, operator: 'gte', value: condition.$gte };
         }
-
         if (condition.$lt !== undefined) {
           return { field, operator: 'lt', value: condition.$lt };
         }
-
         if (condition.$lte !== undefined) {
           return { field, operator: 'lte', value: condition.$lte };
         }
-
         if (condition.$in !== undefined && Array.isArray(condition.$in)) {
           return { field, operator: 'in', value: condition.$in };
         }
       }
     }
 
-    // For compound indexes, all fields must be exact matches
+    // For compound indexes, support multi-field range queries
     if (this.fields.length > 1) {
-      const values: (string | number)[] = [];
-
+      let prefixLen = 0;
+      const lower: (string | number | null)[] = [];
+      const upper: (string | number | null)[] = [];
+      let allFieldsHaveCondition = true;
       for (let i = 0; i < this.fields.length; i++) {
         const fieldName = this.fields[i];
         if (!(fieldName in query)) {
-          return null;
+          allFieldsHaveCondition = false;
+          // Always use '' for missing lower, '\uffff' for missing upper
+          lower.push('');
+          upper.push('\uffff');
+          break;
         }
         const condition = query[fieldName as keyof typeof query];
-
-        // Must be simple equality or $eq
-        if (condition === undefined) {
-          return null;
-        }
-
         if (typeof condition !== 'object' || condition === null) {
-          values.push(condition);
-        } else if (condition.$eq !== undefined) {
-          values.push(condition.$eq);
+          lower.push(condition);
+          upper.push(condition);
+          prefixLen++;
         } else {
-          return null;
+          // Range support: $gte/$gt for lower, $lte/$lt for upper
+          let hasLower = false, hasUpper = false;
+          if (condition.$gte !== undefined) {
+            lower.push(condition.$gte);
+            hasLower = true;
+          } else if (condition.$gt !== undefined) {
+            lower.push(condition.$gt);
+            hasLower = true;
+          } else {
+            lower.push(''); // Use '' for missing lower bound
+          }
+          if (condition.$lte !== undefined) {
+            upper.push(condition.$lte);
+            hasUpper = true;
+          } else if (condition.$lt !== undefined) {
+            upper.push(condition.$lt);
+            hasUpper = true;
+          } else {
+            upper.push('\uffff'); // Use '\uffff' for missing upper bound
+          }
+          if (hasLower || hasUpper) {
+            prefixLen++;
+          } else if (condition.$eq !== undefined) {
+            lower[prefixLen] = condition.$eq;
+            upper[prefixLen] = condition.$eq;
+            prefixLen++;
+          } else if (condition.$in !== undefined && Array.isArray(condition.$in)) {
+            if (i === this.fields.length - 1) {
+              return { field: this.fields.slice(0, prefixLen + 1).join(','), operator: 'in', value: condition.$in.map((v: any) => this.getCompoundKey([...lower.slice(0, i), v])) };
+            } else {
+              break;
+            }
+          } else {
+            break;
+          }
         }
       }
-
-      return { field: this.fields.join(','), operator: 'eq', value: this.getCompoundKey(values) };
+      if (prefixLen === 0) return null;
+      // If all fields matched exactly
+      if (allFieldsHaveCondition && lower.every((v, i) => v !== null && v === upper[i])) {
+        return { field: this.fields.join(','), operator: 'eq', value: this.getCompoundKey(lower as (string | number)[]) };
+      }
+      // If at least one field has a range
+      if (prefixLen > 0 && (lower.some((v, i) => v !== null && v !== upper[i]) || upper.some((v, i) => v !== null && v !== lower[i]))) {
+        // Compose start and end keys for B-tree scan
+        const fill = (arr: (string | number | null)[], fillTo: number, fillValue: string | number) => {
+          const out = arr.slice();
+          while (out.length < fillTo) out.push(fillValue);
+          return out;
+        };
+        // Use '' for lowest, '\uffff' for highest
+        const startKey = this.getCompoundKey(fill(lower, this.fields.length, ''));
+        const endKey = this.getCompoundKey(fill(upper, this.fields.length, '\uffff'));
+        return { field: this.fields.slice(0, prefixLen).join(','), operator: 'range', value: [startKey, endKey] };
+      }
+      // If only a prefix of fields matched (all eq)
+      if (prefixLen > 0 && prefixLen < this.fields.length && lower.every((v, i) => v !== null && v === upper[i])) {
+        const prefix = lower.slice(0, prefixLen).map(v => {
+          if (v === null || v === undefined) return 'null';
+          if (typeof v === 'string') return v.replace(/\|/g, '\\|');
+          return String(v);
+        }).join('|');
+        return { field: this.fields.slice(0, prefixLen).join(','), operator: 'prefix', value: prefix };
+      }
     }
-
     return null;
   }
 
@@ -432,7 +495,7 @@ export class EnhancedIndex {
       const value = this.getFieldValue(doc, fieldName);
 
       if (value === undefined) {
-        return this.options.sparse ? [] : [null as any];
+        return this.options.sparse ? [] : [''];
       }
 
       if (this.type === IndexType.MULTI && Array.isArray(value)) {
@@ -444,17 +507,17 @@ export class EnhancedIndex {
       // Compound index
       const values = this.fields.map(field => {
         const value = this.getFieldValue(doc, field);
-        return value === undefined ? null : this.normalizeValue(value);
+        return value === undefined ? '' : this.normalizeValue(value);
       });
 
       // If any required field is undefined and not sparse, skip
-      if (!this.options.sparse && values.some(v => v === null)) {
+      if (!this.options.sparse && values.some(v => v === '')) {
         return [];
       }
 
-      // Filter out null values and cast to (string | number)[] to satisfy TypeScript
-      const nonNullValues = values.filter(v => v !== null) as (string | number)[];
-      return [this.getCompoundKey(nonNullValues)];
+      // Filter out empty values and cast to (string | number)[] to satisfy TypeScript
+      const nonEmptyValues = values.filter(v => v !== '') as (string | number)[];
+      return [this.getCompoundKey(nonEmptyValues)];
     }
   }
 
@@ -511,8 +574,8 @@ export class EnhancedIndex {
    */
   private getCompoundKey(values: (string | number)[]): string {
     return values.map(v => {
-      if (v === null || v === undefined) {
-        return 'null';
+      if (v === '' || v === undefined) {
+        return '';
       }
       if (typeof v === 'string') {
         // Escape pipe characters in strings

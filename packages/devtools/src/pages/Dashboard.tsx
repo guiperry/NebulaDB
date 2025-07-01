@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { Link } from 'react-router-dom';
 import { Event, DatabaseSnapshot, CollectionStats, DatabaseStats } from '../types';
+import { PluginMonitor } from '../components/PluginMonitor';
 
 interface DashboardProps {
   socket: Socket | null;
@@ -228,6 +229,9 @@ export function Dashboard({ socket, snapshot, events }: DashboardProps) {
             </Link>
           </div>
         </div>
+      </div>
+      <div className="mt-8">
+        <PluginMonitor events={events} migrationHistory={snapshot?.migrationHistory || {}} />
       </div>
     </div>
   );

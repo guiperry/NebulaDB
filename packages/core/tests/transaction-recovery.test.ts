@@ -1,8 +1,7 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { createDb } from '../../packages/core/src';
-import { MemoryAdapter } from '../../packages/adapters/memory/src';
+import { createDb, MemoryAdapter } from '../src';
 // Import Transaction directly from the file to ensure it's included in coverage
-import { Transaction } from '../../packages/core/src/transaction';
+import { Transaction } from '../src/transaction';
 
 describe('Transaction Failure Recovery Tests', () => {
   let db: any;

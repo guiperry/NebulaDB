@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { createDb } from '@nebula-db/core';
-import { MemoryAdapter } from '@nebula-db/adapter-memory';
+import { createDb } from '../../packages/core/src';
+import { MemoryAdapter } from '../../packages/core/src';
 
 describe('Index Maintenance Tests', () => {
   let db: any;

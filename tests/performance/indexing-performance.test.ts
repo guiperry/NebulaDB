@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createDb } from '@nebula-db/core';
-import { MemoryAdapter } from '@nebula-db/adapter-memory';
+import { createDb } from '../../packages/core/src';
+import { MemoryAdapter } from '../../packages/core/src';
 import { performance } from 'perf_hooks';
 
 describe('Indexing Performance Tests', () => {

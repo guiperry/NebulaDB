@@ -102,6 +102,8 @@ export function Collection({ socket, snapshot }: CollectionProps) {
           <CollectionViewer
             name={name || ''}
             documents={documents}
+            indexes={snapshot?.indexes?.[name || ''] || []}
+            schemaVersion={snapshot?.schemaVersions?.[name || '']}
             onEdit={handleEditDocument}
             onDelete={handleDeleteDocument}
           />
