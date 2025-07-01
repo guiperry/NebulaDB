@@ -111,6 +111,32 @@ const versions = await userHistory.find({ _originalId: user.id });
 console.log(versions); // All versions of the document
 ```
 
+### Migration Plugin (Billow)
+
+The Migration Plugin manages per-collection schema versioning and migrations.
+
+```typescript
+import { createMigrationPlugin, getSchemaVersion, setSchemaVersion } from '@nebula/plugin-migration';
+
+const migrations = [
+  { version: 1, name: 'Add email', async up(db) { /* ... */ } },
+  { version: 2, name: 'Add createdAt', async up(db) { /* ... */ } }
+];
+
+const db = createDb({
+  adapter: new MemoryAdapter(),
+  plugins: [createMigrationPlugin(migrations)]
+});
+
+const version = await getSchemaVersion(db, 'users');
+await setSchemaVersion(db, 'users', 2);
+```
+
+**Best Practices (Billow):**
+- Use the migration plugin for zero-downtime schema upgrades.
+- Track schema version per collection.
+- Inspect migration history in the devtools UI.
+
 ## Creating Custom Plugins
 
 You can create your own plugins by implementing the `Plugin` interface:

@@ -198,3 +198,7 @@ process.on('SIGINT', async () => {
   process.exit(0);
 });
 ```
+
+## Billow Update: Index Metadata & Schema Version
+
+Adapters now support exposing index metadata and schema version for each collection, visible in the devtools UI (Billow release).

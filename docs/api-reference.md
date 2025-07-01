@@ -170,3 +170,61 @@ type Document = {
 ```
 
 ### `Query`
+```
+
+## Migration Plugin API
+
+### `createMigrationPlugin(migrations)`
+
+Creates a migration plugin to manage schema migrations.
+
+**Parameters:**
+- `migrations`: Array of migration objects `{ version: number, name: string, up: (db) => Promise<void> }`
+
+**Usage:**
+```typescript
+import { createMigrationPlugin } from '@nebula/plugin-migration';
+const plugin = createMigrationPlugin(migrations);
+```
+
+### `getSchemaVersion(db, collectionName)`
+Returns the current schema version for a collection.
+
+### `setSchemaVersion(db, collectionName, version)`
+Sets the schema version for a collection.
+
+**Usage:**
+```typescript
+import { getSchemaVersion, setSchemaVersion } from '@nebula/plugin-migration';
+const version = await getSchemaVersion(db, 'users');
+await setSchemaVersion(db, 'users', 2);
+```
+
+## Collection Index Options
+
+The `collection` method supports advanced index definitions:
+
+- `type`: 'single' | 'unique' | 'compound'
+- `fields`: Array of field names (for compound/multi-field indexes)
+- `options.partial`: `{ filter: Query }` (for partial indexes)
+- `options.expireAfterSeconds`: number (for TTL)
+
+**Example:**
+```typescript
+const users = db.collection('users', {
+  indexes: [
+    { name: 'id_idx', fields: ['id'], type: 'unique' },
+    { name: 'name_age_idx', fields: ['name', 'age'], type: 'compound' },
+    { name: 'active_idx', fields: ['active'], type: 'single', options: { partial: { filter: { active: true } } } }
+  ]
+});
+```
+
+## Devtools API
+
+The devtools expose the following metadata for each collection:
+- Index metadata (fields, type, options)
+- Schema version
+- Migration history
+
+See the devtools UI for details.

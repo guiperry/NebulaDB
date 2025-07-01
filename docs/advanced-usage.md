@@ -517,3 +517,39 @@ const results = await users.find({
   bio: { $text: 'developer' }
 });
 ```
+
+## Advanced Indexing Scenarios (Billow)
+
+- **Partial Prefix Queries**: Query using a prefix of a compound index for efficient lookups.
+- **Multi-field Range Queries**: Query ranges across multiple fields using compound indexes.
+- **Automatic Index Selection**: NebulaDB chooses the optimal index for each query.
+
+```typescript
+// Partial prefix query
+const results = await users.find({ name: 'Alice' });
+// Multi-field range query
+const rangeResults = await users.find({ name: { $gte: 'A', $lte: 'M' }, age: { $gt: 20, $lt: 40 } });
+```
+
+## Schema Versioning & Migration Best Practices
+
+- Use the migration plugin to manage schema changes and upgrades.
+- Track schema version per collection with `getSchemaVersion` and `setSchemaVersion`.
+- Run migrations on startup for zero-downtime upgrades.
+
+```typescript
+import { createMigrationPlugin, getSchemaVersion, setSchemaVersion } from '@nebula/plugin-migration';
+const db = createDb({
+  adapter: new MemoryAdapter(),
+  plugins: [createMigrationPlugin(migrations)]
+});
+```
+
+## Devtools Usage
+
+- Inspect index metadata, schema version, and migration history in the devtools UI (CollectionViewer, PluginMonitor).
+- Use devtools to debug and optimize queries with advanced indexes.
+
+## Branding
+
+NebulaDB v0.3.0 "Billow" features a new cloud-themed visual identity and improved documentation for all advanced features.

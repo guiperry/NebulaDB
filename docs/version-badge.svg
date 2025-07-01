@@ -20,6 +20,6 @@
   </g>
   
   <!-- Version text -->
-  <text x="50" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">v0.2.2</text>
-  <text x="50" y="45" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">"Altocumulus"</text>
+  <text x="50" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">v0.3.0</text>
+  <text x="50" y="45" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">"Billow"</text>
 </svg>

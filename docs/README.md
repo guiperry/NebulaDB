@@ -29,6 +29,7 @@ NebulaDB is a high-performance, reactive, TypeScript-first, schema-optional, emb
 - **Universal**: Works in browsers, Node.js, and Edge environments
 - **Scalable**: Efficient memory management and document compression for large datasets
 - **Optimized**: Batch operations and parallel processing for better performance
+- **Cloud-Themed Release**: Billow (v0.3.0) introduces advanced indexing, schema versioning, migration plugin, and devtools improvements with a new cloud-inspired visual identity.
 
 ## Installation
 
@@ -149,6 +150,25 @@ const unsubscribe = users.subscribe(
 unsubscribe();
 ```
 
+### Schema Versioning & Migration
+
+NebulaDB supports per-collection schema versioning and migrations using the migration plugin:
+
+```typescript
+import { createMigrationPlugin, getSchemaVersion, setSchemaVersion } from '@nebula/plugin-migration';
+
+const db = createDb({
+  adapter: new MemoryAdapter(),
+  plugins: [createMigrationPlugin(migrations)]
+});
+
+// Get and set schema version
+const version = await getSchemaVersion(db, 'users');
+await setSchemaVersion(db, 'users', 2);
+```
+
+See [Plugins Guide](./plugins.md) and [Advanced Usage](./advanced-usage.md) for details.
+
 ## Performance Optimizations
 
 NebulaDB includes several performance optimizations to ensure fast and efficient operation, even with large datasets:
@@ -158,6 +178,8 @@ NebulaDB includes several performance optimizations to ensure fast and efficient
 - **B-tree Implementation**: Efficient range queries and sorting
 - **Compound Indexes**: Optimize queries on multiple fields
 - **Partial Indexes**: Index only documents that match a filter
+- **Multi-field Range Queries**: Efficiently query ranges across multiple fields
+- **Partial Prefix Queries**: Query using a prefix of a compound index
 - **Automatic Index Selection**: Chooses the best index for each query
 
 ```typescript
@@ -262,6 +284,20 @@ const db = createDb({
   }
 });
 ```
+
+## Devtools
+
+NebulaDB Devtools now display index metadata, schema version, and migration history for each collection. Use the devtools UI to inspect and debug advanced features.
+
+## Branding
+
+NebulaDB v0.3.0 "Billow" introduces a new cloud-themed visual identity. See the new hero image and timeline in the docs and website.
+
+## Timeline
+
+- **Altocumulus (v0.2.x)**: Initial release with core features
+- **Billow (v0.3.0)**: Advanced indexing, schema versioning, migration, devtools, and cloud branding
+- **Cirrus (future)**: Planned features (see [ROADMAP.md](../ROADMAP.md))
 
 ## API Reference
 

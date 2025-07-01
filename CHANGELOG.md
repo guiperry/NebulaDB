@@ -101,3 +101,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Integration tests for adapters and plugins
 - Benchmarks
   - Performance comparison with similar databases
+
+## [Billow] - 2025-07-01
+
+### 🚀 Major Features
+
+- **Advanced Indexing**
+  - Full support for compound, partial, and multi-field indexes.
+  - Efficient partial prefix and multi-field range queries.
+  - Robust, tested index logic for all advanced scenarios.
+
+- **Schema Versioning & Migrations**
+  - Per-collection schema version tracking.
+  - Migration plugin with helpers to get/set schema version.
+  - Migration history tracked and queryable for each collection.
+  - Automated and manual migration support.
+
+- **Devtools Improvements**
+  - Index metadata and schema version visible in the UI for each collection.
+  - Migration history for each collection shown on the dashboard.
+  - Cleaner, more informative dashboards and collection views.
+
+- **Developer Experience**
+  - Improved test coverage and monorepo coverage reporting.
+  - Cleaner code, better types, and up-to-date documentation.
+
+---
+
+#### 💡 Upgrade Notes
+
+- To use schema versioning and migrations, install and configure the migration plugin in your project.
+- Devtools now require the latest backend for full feature support.
+
+---
+
+#### 🛠️ Contributors
+
+- @your-github-handle and the NebulaDB community
+
+---

@@ -646,3 +646,57 @@ async function run() {
 
 run();
 ```
+
+## Advanced Indexing Examples (Billow)
+
+```typescript
+// Compound index
+const users = db.collection('users', {
+  indexes: [
+    { name: 'name_age_idx', fields: ['name', 'age'], type: 'compound' }
+  ]
+});
+
+// Partial index
+const activeUsers = db.collection('users', {
+  indexes: [
+    { name: 'active_idx', fields: ['lastActive'], type: 'single', options: { partial: { filter: { active: true } } } }
+  ]
+});
+
+// Multi-field range query
+const results = await users.find({
+  name: { $gte: 'A', $lte: 'M' },
+  age: { $gt: 20, $lt: 40 }
+});
+
+// Partial prefix query
+const prefixResults = await users.find({ name: 'Alice' }); // Uses prefix of compound index
+```
+
+## Schema Versioning & Migration Example
+
+```typescript
+import { createMigrationPlugin, getSchemaVersion, setSchemaVersion } from '@nebula/plugin-migration';
+
+const migrations = [
+  { version: 1, name: 'Add email', async up(db) { /* ... */ } },
+  { version: 2, name: 'Add createdAt', async up(db) { /* ... */ } }
+];
+
+const db = createDb({
+  adapter: new MemoryAdapter(),
+  plugins: [createMigrationPlugin(migrations)]
+});
+
+const version = await getSchemaVersion(db, 'users');
+await setSchemaVersion(db, 'users', 2);
+```
+
+## Devtools Usage
+
+// In the devtools UI, inspect:
+// - Index metadata for each collection
+// - Schema version
+// - Migration history
+// These features are available in the CollectionViewer and PluginMonitor panels.
