@@ -14,7 +14,7 @@ npm install @nebula-db/plugin-versioning
 
 ```typescript
 import { createDb } from '@nebula-db/core';
-import { MemoryAdapter } from '@nebula-db/adapter-memory';
+import { MemoryAdapter } from '@nebula-db/adapter-memorydb';
 import { createVersioningPlugin } from '@nebula-db/plugin-versioning';
 
 // Create the plugin

@@ -3,7 +3,7 @@
  */
 
 const { createDb } = require('@nebula-db/core');
-const { MemoryAdapter } = require('@nebula/adapter-memory');
+const { MemoryAdapter } = require('@nebula/adapter-memorydb');
 const Loki = require('lokijs');
 const { Low } = require('lowdb');
 const { Memory } = require('lowdb/browser');

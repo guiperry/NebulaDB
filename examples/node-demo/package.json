@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "@nebula-db/nebula-db": "^0.2.0",
-    "@nebula-db/adapter-memory": "^0.2.0",
-    "@nebula-db/adapter-filesystem": "^0.2.0",
+    "@nebula-db/adapter-memorydb": "^0.2.0",
+    "@nebula-db/adapter-filesystemdb": "^0.2.0",
     "@nebula-db/plugin-validation": "^0.2.0"
   },
   "devDependencies": {

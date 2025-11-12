@@ -708,30 +708,10 @@ export class Collection implements ICollection {
    */
   getIndexes(): IndexDefinition[] {
     return this.indexManager.getAllIndexes().map(index => {
-      // Convert from enhanced-indexing.IndexType to types.IndexDefinition type
-      let type: 'single' | 'compound' | 'unique' | 'text';
-
-      switch (index.type) {
-        case IndexType.SINGLE:
-          type = 'single';
-          break;
-        case IndexType.COMPOUND:
-          type = 'compound';
-          break;
-        case IndexType.UNIQUE:
-          type = 'unique';
-          break;
-        case IndexType.TEXT:
-          type = 'text';
-          break;
-        default:
-          type = 'single';
-      }
-
       return {
         name: index.name,
         fields: index.fields,
-        type: type
+        type: index.type
       };
     });
   }

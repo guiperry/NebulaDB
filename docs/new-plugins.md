@@ -16,7 +16,7 @@ npm install @nebula/plugin-cache
 
 ```typescript
 import { createDb } from '@nebula/core';
-import { MemoryAdapter } from '@nebula/adapter-memory';
+import { MemoryAdapter } from '@nebula/adapter-memorydb';
 import { createCachePlugin } from '@nebula/plugin-cache';
 
 // Create the cache plugin
@@ -73,7 +73,7 @@ npm install @nebula/plugin-logger
 
 ```typescript
 import { createDb } from '@nebula/core';
-import { MemoryAdapter } from '@nebula/adapter-memory';
+import { MemoryAdapter } from '@nebula/adapter-memorydb';
 import { createLoggerPlugin, LogLevel } from '@nebula/plugin-logger';
 
 // Create the logger plugin
@@ -152,7 +152,7 @@ npm install @nebula/plugin-migration
 
 ```typescript
 import { createDb } from '@nebula/core';
-import { FileSystemAdapter } from '@nebula/adapter-filesystem';
+import { FileSystemAdapter } from '@nebula/adapter-filesystemdb';
 import { createMigrationPlugin } from '@nebula/plugin-migration';
 
 // Define migrations

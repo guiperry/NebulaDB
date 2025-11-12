@@ -14,7 +14,7 @@ npm install @nebula-db/plugin-logger
 
 ```typescript
 import { createDb } from '@nebula-db/core';
-import { MemoryAdapter } from '@nebula-db/adapter-memory';
+import { MemoryAdapter } from '@nebula-db/adapter-memorydb';
 import { createLoggerPlugin } from '@nebula-db/plugin-logger';
 
 // Create the plugin

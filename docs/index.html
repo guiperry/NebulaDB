@@ -63,7 +63,7 @@ $ nebula migrate
 ✔ All migrations applied
 $ node
 > import { createDb } from '@nebula/core';
-> import { MemoryAdapter } from '@nebula/adapter-memory';
+> import { MemoryAdapter } from '@nebula/adapter-memorydb';
 > import { createMigrationPlugin, getSchemaVersion } from '@nebula/plugin-migration';
 > // Billow: Migrations & advanced indexes
 > const migrations = [
@@ -345,7 +345,7 @@ $ node
     '✔ All migrations applied',
     '$ node',
     '> import { createDb } from "@nebula/core";',
-    '> import { MemoryAdapter } from "@nebula/adapter-memory";',
+    '> import { MemoryAdapter } from "@nebula/adapter-memorydb";',
     '> import { createMigrationPlugin, getSchemaVersion } from "@nebula/plugin-migration";',
     '> // Billow: Migrations & advanced indexes',
     '> const migrations = [',

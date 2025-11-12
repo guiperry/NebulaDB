@@ -168,7 +168,7 @@ db.saveDatabase();
 </code></pre>
 <p><strong>NebulaDB:</strong></p>
 <pre><code class="language-javascript">import { createDb } from &#39;@nebula/core&#39;;
-import { FileSystemAdapter } from &#39;@nebula/adapter-filesystem&#39;;
+import { FileSystemAdapter } from &#39;@nebula/adapter-filesystemdb&#39;;
 
 // Create a database
 const db = createDb({
@@ -206,7 +206,7 @@ await db.save();
 <p>Here&#39;s a script to help migrate data from LokiJS to NebulaDB:</p>
 <pre><code class="language-javascript">const loki = require(&#39;lokijs&#39;);
 import { createDb } from &#39;@nebula/core&#39;;
-import { FileSystemAdapter } from &#39;@nebula/adapter-filesystem&#39;;
+import { FileSystemAdapter } from &#39;@nebula/adapter-filesystemdb&#39;;
 
 async function migrateFromLokiJS(lokiPath, nebulaPath) {
   // Load LokiJS database
@@ -549,7 +549,7 @@ await db.write();
 </code></pre>
 <p><strong>NebulaDB:</strong></p>
 <pre><code class="language-javascript">import { createDb } from &#39;@nebula/core&#39;;
-import { FileSystemAdapter } from &#39;@nebula/adapter-filesystem&#39;;
+import { FileSystemAdapter } from &#39;@nebula/adapter-filesystemdb&#39;;
 
 // Create database
 const db = createDb({
@@ -586,7 +586,7 @@ await db.save();
 <pre><code class="language-javascript">const { Low } = require(&#39;lowdb&#39;);
 const { JSONFile } = require(&#39;lowdb/node&#39;);
 import { createDb } from &#39;@nebula/core&#39;;
-import { FileSystemAdapter } from &#39;@nebula/adapter-filesystem&#39;;
+import { FileSystemAdapter } from &#39;@nebula/adapter-filesystemdb&#39;;
 
 async function migrateFromLowdb(lowdbPath, nebulaPath) {
   // Open Lowdb database

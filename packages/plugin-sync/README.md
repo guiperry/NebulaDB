@@ -14,7 +14,7 @@ npm install @nebula-db/plugin-sync
 
 ```typescript
 import { createDb } from '@nebula-db/core';
-import { MemoryAdapter } from '@nebula-db/adapter-memory';
+import { MemoryAdapter } from '@nebula-db/adapter-memorydb';
 import { createSyncPlugin } from '@nebula-db/plugin-sync';
 
 // Create the plugin

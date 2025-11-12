@@ -85,7 +85,7 @@
 </code></pre>
 <h3>Usage</h3>
 <pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
-import { MemoryAdapter } from &#39;@nebula/adapter-memory&#39;;
+import { MemoryAdapter } from &#39;@nebula/adapter-memorydb&#39;;
 import { createCachePlugin } from &#39;@nebula/plugin-cache&#39;;
 
 // Create the cache plugin
@@ -134,7 +134,7 @@ const result2 = await users.find({ age: { $gt: 30 } }); // This query uses the c
 </code></pre>
 <h3>Usage</h3>
 <pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
-import { MemoryAdapter } from &#39;@nebula/adapter-memory&#39;;
+import { MemoryAdapter } from &#39;@nebula/adapter-memorydb&#39;;
 import { createLoggerPlugin, LogLevel } from &#39;@nebula/plugin-logger&#39;;
 
 // Create the logger plugin
@@ -201,7 +201,7 @@ const loggerPlugin = createLoggerPlugin({
 </code></pre>
 <h3>Usage</h3>
 <pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
-import { FileSystemAdapter } from &#39;@nebula/adapter-filesystem&#39;;
+import { FileSystemAdapter } from &#39;@nebula/adapter-filesystemdb&#39;;
 import { createMigrationPlugin } from &#39;@nebula/plugin-migration&#39;;
 
 // Define migrations

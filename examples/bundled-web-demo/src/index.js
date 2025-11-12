@@ -1,5 +1,5 @@
 import { createDatabase } from '@nebula-db/nebula-db';
-import { MemoryAdapter } from '@nebula-db/adapter-memory';
+import { MemoryAdapter } from '@nebula-db/adapter-memorydb';
 import { setTheme, toggleTheme, getTheme } from 'flex-theme';
 import './styles.css';
 

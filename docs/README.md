@@ -38,10 +38,10 @@ NebulaDB is a high-performance, reactive, TypeScript-first, schema-optional, emb
 npm install @nebula/core
 
 # Install adapters as needed
-npm install @nebula/adapter-memory
+npm install @nebula/adapter-memorydb
 npm install @nebula/adapter-localstorage
 npm install @nebula/adapter-indexeddb
-npm install @nebula/adapter-filesystem
+npm install @nebula/adapter-filesystemdb
 
 # Install plugins as needed
 npm install @nebula/plugin-encryption
@@ -57,7 +57,7 @@ The database is the main entry point to NebulaDB. It manages collections and pro
 
 ```typescript
 import { createDb } from '@nebula/core';
-import { MemoryAdapter } from '@nebula/adapter-memory';
+import { MemoryAdapter } from '@nebula/adapter-memorydb';
 
 const db = createDb({
   adapter: new MemoryAdapter(),

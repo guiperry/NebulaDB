@@ -1,5 +1,5 @@
 import { createDb } from '@nebula-db/core';
-import { MemoryAdapter } from '@nebula-db/adapter-memory';
+import { MemoryAdapter } from '@nebula-db/adapter-memorydb';
 import { Model, Field, Index, Relation, RelationType, ModelManager, IndexType } from '../src';
 
 // Create a database

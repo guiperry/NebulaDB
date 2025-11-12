@@ -14,7 +14,7 @@ npm install @nebula-db/plugin-migration
 
 ```typescript
 import { createDb } from '@nebula-db/core';
-import { MemoryAdapter } from '@nebula-db/adapter-memory';
+import { MemoryAdapter } from '@nebula-db/adapter-memorydb';
 import { createMigrationPlugin } from '@nebula-db/plugin-migration';
 
 // Create the plugin

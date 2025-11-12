@@ -14,7 +14,7 @@ npm install @nebula-db/plugin-cache
 
 ```typescript
 import { createDb } from '@nebula-db/core';
-import { MemoryAdapter } from '@nebula-db/adapter-memory';
+import { MemoryAdapter } from '@nebula-db/adapter-memorydb';
 import { createCachePlugin } from '@nebula-db/plugin-cache';
 
 // Create the plugin

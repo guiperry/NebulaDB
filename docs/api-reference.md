@@ -18,7 +18,7 @@ Creates a new database instance.
 **Example:**
 ```typescript
 import { createDb } from '@nebula-db/core';
-import { MemoryAdapter } from '@nebula/adapter-memory';
+import { MemoryAdapter } from '@nebula/adapter-memorydb';
 
 const db = createDb({ adapter: new MemoryAdapter() });
 ```

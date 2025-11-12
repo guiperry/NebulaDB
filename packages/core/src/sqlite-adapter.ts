@@ -18,10 +18,10 @@ export class SQLiteAdapter implements Adapter {
   async load(): Promise<Record<string, Document[]>> {
     const collections: Record<string, Document[]> = {};
     // Get all table names (collections)
-    const tables = this.db.prepare(`SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%';`).all();
+    const tables = this.db.prepare(`SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%';`).all() as { name: string }[];
     for (const { name } of tables) {
-      const rows = this.db.prepare(`SELECT id, data FROM "${name}";`).all();
-      collections[name] = rows.map(row => ({ id: row.id, ...JSON.parse(row.data) }));
+      const rows = this.db.prepare(`SELECT id, data FROM "${name}";`).all() as { id: string, data: string }[];
+      collections[name] = rows.map((row: { id: string, data: string }) => ({ id: row.id, ...JSON.parse(row.data) }));
     }
     return collections;
   }

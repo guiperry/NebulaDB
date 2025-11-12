@@ -34,7 +34,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@nebula/core': resolve(__dirname, '../packages/core/src'),
-      '@nebula/adapter-memory': resolve(__dirname, '../packages/adapters/memory/src'),
+      '@nebula/adapter-memorydb': resolve(__dirname, '../packages/adapters/memory/src'),
       '@nebula/adapter-sqlite': resolve(__dirname, '../packages/adapters/sqlite/src'),
       '@nebula/plugin-cache': resolve(__dirname, '../packages/plugins/cache/src'),
       '@nebula/plugin-validation': resolve(__dirname, '../packages/plugins/validation/src')

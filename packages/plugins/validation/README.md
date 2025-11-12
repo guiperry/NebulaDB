@@ -14,7 +14,7 @@ npm install @nebula-db/plugin-validation
 
 ```typescript
 import { createDb } from '@nebula-db/core';
-import { MemoryAdapter } from '@nebula-db/adapter-memory';
+import { MemoryAdapter } from '@nebula-db/adapter-memorydb';
 import { createValidationPlugin } from '@nebula-db/plugin-validation';
 
 // Create the plugin

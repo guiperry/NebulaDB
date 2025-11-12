@@ -27,7 +27,7 @@ npm install @nebula-db/nebula-db
 
 # Or install individual packages
 npm install @nebula-db/core
-npm install @nebula-db/adapter-memory
+npm install @nebula-db/adapter-memorydb
 # etc.
 ```
 

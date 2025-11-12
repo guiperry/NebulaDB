@@ -42,7 +42,7 @@ npm install @nebula-db/core
 # Install adapters as needed
 npm install @nebula-db/adapter-localstorage
 npm install @nebula-db/adapter-indexeddb
-npm install @nebula-db/adapter-filesystem
+npm install @nebula-db/adapter-filesystemdb
 
 # Install plugins as needed
 npm install @nebula-db/plugin-encryption
@@ -92,7 +92,7 @@ users.subscribe({ age: { $gt: 30 } }, (result) => {
 
 ```typescript
 import { createDb } from '@nebula-db/core';
-import { MemoryAdapter } from '@nebula-db/adapter-memory';
+import { MemoryAdapter } from '@nebula-db/adapter-memorydb';
 
 // Create a database with in-memory adapter and optimized settings
 const db = createDb({
@@ -211,10 +211,10 @@ NebulaDB is organized as a monorepo with multiple packages:
 
 ### Adapters
 
-- **[@nebula-db/adapter-memory](https://www.npmjs.com/package/@nebula-db/adapter-memory)**: In-memory storage
+- **[@nebula-db/adapter-memorydb](https://www.npmjs.com/package/@nebula-db/adapter-memorydb)**: In-memory storage
 - **[@nebula-db/adapter-localstorage](https://www.npmjs.com/package/@nebula-db/adapter-localstorage)**: Browser localStorage adapter
 - **[@nebula-db/adapter-indexeddb](https://www.npmjs.com/package/@nebula-db/adapter-indexeddb)**: Browser IndexedDB adapter
-- **[@nebula-db/adapter-filesystem](https://www.npmjs.com/package/@nebula-db/adapter-filesystem)**: Node.js file system adapter
+- **[@nebula-db/adapter-filesystemdb](https://www.npmjs.com/package/@nebula-db/adapter-filesystemdb)**: Node.js file system adapter
 
 ### Plugins
 

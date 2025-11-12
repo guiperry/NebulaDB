@@ -1,5 +1,5 @@
 import PouchDB from 'pouchdb';
-import PouchDBMemoryAdapter from 'pouchdb-adapter-memory';
+import PouchDBMemoryAdapter from 'pouchdb-adapter-memorydb';
 import { DatabaseAdapter, TestDocument } from '../types';
 
 // Register memory adapter

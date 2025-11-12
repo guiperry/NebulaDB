@@ -83,7 +83,7 @@
 <h3>Memory Adapter</h3>
 <p>The Memory Adapter stores data in memory only. Data is lost when the application restarts.</p>
 <pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
-import { MemoryAdapter } from &#39;@nebula/adapter-memory&#39;;
+import { MemoryAdapter } from &#39;@nebula/adapter-memorydb&#39;;
 
 const db = createDb({
   adapter: new MemoryAdapter()
@@ -131,7 +131,7 @@ const db = createDb({
 <h3>FileSystem Adapter</h3>
 <p>The FileSystem Adapter persists data to the file system in Node.js environments.</p>
 <pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
-import { FileSystemAdapter } from &#39;@nebula/adapter-filesystem&#39;;
+import { FileSystemAdapter } from &#39;@nebula/adapter-filesystemdb&#39;;
 import path from &#39;path&#39;;
 
 const db = createDb({

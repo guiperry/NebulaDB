@@ -12,7 +12,7 @@ The Memory Adapter stores data in memory only. Data is lost when the application
 
 ```typescript
 import { createDb } from '@nebula/core';
-import { MemoryAdapter } from '@nebula/adapter-memory';
+import { MemoryAdapter } from '@nebula/adapter-memorydb';
 
 const db = createDb({
   adapter: new MemoryAdapter()
@@ -69,7 +69,7 @@ The FileSystem Adapter persists data to the file system in Node.js environments.
 
 ```typescript
 import { createDb } from '@nebula/core';
-import { FileSystemAdapter } from '@nebula/adapter-filesystem';
+import { FileSystemAdapter } from '@nebula/adapter-filesystemdb';
 import path from 'path';
 
 const db = createDb({

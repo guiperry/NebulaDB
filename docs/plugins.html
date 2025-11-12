@@ -83,7 +83,7 @@
 <h3>Validation Plugin</h3>
 <p>The Validation Plugin uses <a href="https://github.com/colinhacks/zod">Zod</a> to validate documents before they&#39;re inserted or updated.</p>
 <pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
-import { MemoryAdapter } from &#39;@nebula/adapter-memory&#39;;
+import { MemoryAdapter } from &#39;@nebula/adapter-memorydb&#39;;
 import { createValidationPlugin } from &#39;@nebula/plugin-validation&#39;;
 import { z } from &#39;zod&#39;;
 
@@ -117,7 +117,7 @@ await users.insert({ name: &#39;B&#39;, email: &#39;not-an-email&#39; }); // Err
 <h3>Encryption Plugin</h3>
 <p>The Encryption Plugin encrypts sensitive data before saving it and decrypts it when loading.</p>
 <pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
-import { MemoryAdapter } from &#39;@nebula/adapter-memory&#39;;
+import { MemoryAdapter } from &#39;@nebula/adapter-memorydb&#39;;
 import { createEncryptionPlugin } from &#39;@nebula/plugin-encryption&#39;;
 
 // Create the encryption plugin
@@ -146,7 +146,7 @@ await users.insert({
 <h3>Versioning Plugin</h3>
 <p>The Versioning Plugin tracks document versions and maintains a history of changes.</p>
 <pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
-import { MemoryAdapter } from &#39;@nebula/adapter-memory&#39;;
+import { MemoryAdapter } from &#39;@nebula/adapter-memorydb&#39;;
 import { createVersioningPlugin } from &#39;@nebula/plugin-versioning&#39;;
 
 // Create the versioning plugin

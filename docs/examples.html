@@ -80,7 +80,7 @@
 <p>This document provides examples of how to use NebulaDB in different scenarios.</p>
 <h2>Basic CRUD Operations</h2>
 <pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
-import { MemoryAdapter } from &#39;@nebula/adapter-memory&#39;;
+import { MemoryAdapter } from &#39;@nebula/adapter-memorydb&#39;;
 
 // Create a database
 const db = createDb({ adapter: new MemoryAdapter() });
@@ -202,7 +202,7 @@ run();
 </code></pre>
 <h2>Blog Application</h2>
 <pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
-import { FileSystemAdapter } from &#39;@nebula/adapter-filesystem&#39;;
+import { FileSystemAdapter } from &#39;@nebula/adapter-filesystemdb&#39;;
 import path from &#39;path&#39;;
 
 // Create a database with file system persistence
@@ -359,7 +359,7 @@ run();
 </code></pre>
 <h2>Real-time Chat Application</h2>
 <pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
-import { MemoryAdapter } from &#39;@nebula/adapter-memory&#39;;
+import { MemoryAdapter } from &#39;@nebula/adapter-memorydb&#39;;
 
 // Create a database
 const db = createDb({ adapter: new MemoryAdapter() });
@@ -508,7 +508,7 @@ run();
 </code></pre>
 <h2>E-commerce Inventory Management</h2>
 <pre><code class="language-typescript">import { createDb } from &#39;@nebula/core&#39;;
-import { FileSystemAdapter } from &#39;@nebula/adapter-filesystem&#39;;
+import { FileSystemAdapter } from &#39;@nebula/adapter-filesystemdb&#39;;
 import path from &#39;path&#39;;
 
 // Create a database

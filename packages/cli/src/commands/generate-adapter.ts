@@ -17,19 +17,19 @@ export async function generateAdapter(name: string, directory: string): Promise<
     // const variableName = camelCase(name) + 'Adapter';
 
     // Create directory
-    const adapterDir = path.resolve(process.cwd(), directory, adapterName);
+    const adapterDir = path.resolve(process.cwd(), directory, 'adapter-' + adapterName);
     await fs.ensureDir(adapterDir);
     await fs.ensureDir(path.join(adapterDir, 'src'));
 
     // Create package.json
     const packageJson = {
-      name: `@nebula/adapter-${adapterName}`,
-      version: '0.1.0',
+      name: `@nebula-db/adapter-${adapterName}`,
+      version: '0.2.3',
       description: `${name} adapter for NebulaDB`,
       main: 'dist/index.js',
       module: 'dist/index.mjs',
       types: 'dist/index.d.ts',
-      files: ['dist'],
+      files: ['dist', 'README.md', 'LICENSE'],
       scripts: {
         build: 'tsup src/index.ts --format cjs,esm --dts',
         test: 'vitest run',
@@ -44,7 +44,7 @@ export async function generateAdapter(name: string, directory: string): Promise<
         vitest: '^1.2.1'
       },
       peerDependencies: {
-        '@nebula/core': '^0.1.0'
+        '@nebula-db/core': '^0.2.0'
       }
     };
 
@@ -77,7 +77,7 @@ export async function generateAdapter(name: string, directory: string): Promise<
     );
 
     // Create adapter implementation
-    const adapterImplementation = `import { Adapter, Document } from '@nebula/core';
+    const adapterImplementation = `import { Adapter, Document } from '@nebula-db/core';
 
 /**
  * ${name} adapter for NebulaDB
@@ -130,6 +130,7 @@ export class ${className} implements Adapter {
 
     // Create test file
     const testImplementation = `import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { Adapter, Document } from '@nebula-db/core';
 import { ${className} } from './index';
 
 describe('${className}', () => {
@@ -172,14 +173,14 @@ This adapter allows NebulaDB to store data in ${name}.
 ## Installation
 
 \`\`\`bash
-npm install @nebula/core @nebula/adapter-${adapterName}
+npm install @nebula-db/core @nebula-db/adapter-${adapterName}
 \`\`\`
 
 ## Usage
 
 \`\`\`typescript
-import { createDb } from '@nebula/core';
-import { ${className} } from '@nebula/adapter-${adapterName}';
+import { createDb } from '@nebula-db/core';
+import { ${className} } from '@nebula-db/adapter-${adapterName}';
 
 // Create a database with ${name} adapter
 const db = createDb({
@@ -211,14 +212,15 @@ MIT
 
     spinner.succeed(`Adapter ${chalk.cyan(adapterName)} generated successfully!`);
     console.log(`\nTo use your new adapter:`);
-    console.log(`1. cd ${directory}/${adapterName}`);
+    console.log(`1. cd ${directory}/adapter-${adapterName}`);
     console.log(`2. npm install`);
     console.log(`3. npm run build`);
     console.log(`\nThen import it in your project:`);
-    console.log(`import { ${className} } from '@nebula/adapter-${adapterName}';`);
+    console.log(`import { ${className} } from '@nebula-db/adapter-${adapterName}';`);
 
   } catch (error) {
-    spinner.fail(`Failed to generate adapter: ${error.message}`);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    spinner.fail(`Failed to generate adapter: ${errorMessage}`);
     throw error;
   }
 }

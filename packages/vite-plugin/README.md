@@ -14,7 +14,7 @@ npm install @nebula-db/vite-plugin
 
 ```typescript
 import { createDb } from '@nebula-db/core';
-import { MemoryAdapter } from '@nebula-db/adapter-memory';
+import { MemoryAdapter } from '@nebula-db/adapter-memorydb';
 import { createVite-pluginPlugin } from '@nebula-db/vite-plugin';
 
 // Create the plugin

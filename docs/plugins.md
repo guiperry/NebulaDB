@@ -12,7 +12,7 @@ The Validation Plugin uses [Zod](https://github.com/colinhacks/zod) to validate 
 
 ```typescript
 import { createDb } from '@nebula-db/core';
-import { MemoryAdapter } from '@nebula/adapter-memory';
+import { MemoryAdapter } from '@nebula/adapter-memorydb';
 import { createValidationPlugin } from '@nebula/plugin-validation';
 import { z } from 'zod';
 
@@ -50,7 +50,7 @@ The Encryption Plugin encrypts sensitive data before saving it and decrypts it w
 
 ```typescript
 import { createDb } from '@nebula-db/core';
-import { MemoryAdapter } from '@nebula/adapter-memory';
+import { MemoryAdapter } from '@nebula/adapter-memorydb';
 import { createEncryptionPlugin } from '@nebula/plugin-encryption';
 
 // Create the encryption plugin
@@ -83,7 +83,7 @@ The Versioning Plugin tracks document versions and maintains a history of change
 
 ```typescript
 import { createDb } from '@nebula-db/core';
-import { MemoryAdapter } from '@nebula/adapter-memory';
+import { MemoryAdapter } from '@nebula/adapter-memorydb';
 import { createVersioningPlugin } from '@nebula/plugin-versioning';
 
 // Create the versioning plugin

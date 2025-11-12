@@ -23,7 +23,7 @@ You can create indexes when defining a collection or later using the `createInde
 
 ```typescript
 import { createDb, IndexType } from '@nebula/core';
-import { MemoryAdapter } from '@nebula/adapter-memory';
+import { MemoryAdapter } from '@nebula/adapter-memorydb';
 
 const db = createDb({ adapter: new MemoryAdapter() });
 

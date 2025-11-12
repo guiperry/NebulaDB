@@ -129,7 +129,7 @@ function generateVirtualModule(
   // Import adapter
   switch (adapter) {
     case 'memory':
-      code += `import { MemoryAdapter } from '@nebula-db/adapter-memory';\n`;
+      code += `import { MemoryAdapter } from '@nebula-db/adapter-memorydb';\n`;
       break;
     case 'localstorage':
     case 'indexeddb':

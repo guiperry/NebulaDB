@@ -433,7 +433,7 @@ For sensitive data, you can encrypt the entire database:
 
 ```typescript
 import { createDb } from '@nebula/core';
-import { FileSystemAdapter } from '@nebula/adapter-filesystem';
+import { FileSystemAdapter } from '@nebula/adapter-filesystemdb';
 import crypto from 'crypto';
 
 class EncryptedFileSystemAdapter extends FileSystemAdapter {

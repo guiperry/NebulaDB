@@ -12,7 +12,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@nebula-db/adapter-memory": "^0.2.0",
+    "@nebula-db/adapter-memorydb": "^0.2.0",
     "@nebula-db/nebula-db": "^0.2.1",
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.1",

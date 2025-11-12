@@ -2,10 +2,10 @@
 import pkg1 from '@nebula-db/nebula-db';
 const { createDatabase } = pkg1;
 
-import pkg2 from '@nebula-db/adapter-memory';
+import pkg2 from '@nebula-db/adapter-memorydb';
 const { MemoryAdapter } = pkg2;
 
-import pkg3 from '@nebula-db/adapter-filesystem';
+import pkg3 from '@nebula-db/adapter-filesystemdb';
 const { FilesystemAdapter } = pkg3;
 import path from 'path';
 import { fileURLToPath } from 'url';

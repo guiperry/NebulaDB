@@ -1,5 +1,5 @@
 const { createDb } = require('@nebula-db/core');
-const { MemoryAdapter } = require('@nebula/adapter-memory');
+const { MemoryAdapter } = require('@nebula/adapter-memorydb');
 
 async function runBasicTests() {
   console.log('Starting basic NebulaDB tests...');

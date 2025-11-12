@@ -74,7 +74,8 @@ export enum IndexType {
   SINGLE = 'single',
   COMPOUND = 'compound',
   UNIQUE = 'unique',
-  TEXT = 'text'
+  TEXT = 'text',
+  MULTI = 'multi'
 }
 
 /**

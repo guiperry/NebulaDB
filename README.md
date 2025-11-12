@@ -82,7 +82,7 @@ npm install @nebula-db/core
 # Install adapters as needed
 npm install @nebula-db/adapter-localstorage
 npm install @nebula-db/adapter-indexeddb
-npm install @nebula-db/adapter-filesystem
+npm install @nebula-db/adapter-filesystemdb
 
 # Install plugins as needed
 npm install @nebula-db/plugin-encryption
@@ -125,7 +125,7 @@ const validatedDb = createDatabase({ validation: true });
 
 ```typescript
 import { createDb } from '@nebula-db/core';
-import { MemoryAdapter } from '@nebula-db/adapter-memory';
+import { MemoryAdapter } from '@nebula-db/adapter-memorydb';
 
 // Create a database with in-memory adapter and optimized settings
 const db = createDb({

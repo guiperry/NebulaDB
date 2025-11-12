@@ -9,29 +9,16 @@ npm install
 npm run build
 cd ../..
 
-# Build memory adapter
-cd packages/adapters/memory
-npm install
-npm run build
-cd ../../..
-
-# Build localStorage adapter
-cd packages/adapters/localstorage
-npm install
-npm run build
-cd ../../..
-
-# Build IndexedDB adapter
-cd packages/adapters/indexeddb
-npm install
-npm run build
-cd ../../..
-
-# Build FileSystem adapter
-cd packages/adapters/filesystem
-npm install
-npm run build
-cd ../../..
+# Build adapters
+for dir in packages/adapter-*/; do
+  if [ -d "$dir" ]; then
+    echo "Building $dir"
+    cd "$dir"
+    npm install
+    npm run build
+    cd ../../..
+  fi
+done
 
 # Build validation plugin
 cd packages/plugins/validation

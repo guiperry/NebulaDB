@@ -14,7 +14,7 @@ npm install @nebula-db/core
 
 ```typescript
 import { createDb } from '@nebula-db/core';
-import { MemoryAdapter } from '@nebula-db/adapter-memory';
+import { MemoryAdapter } from '@nebula-db/adapter-memorydb';
 
 // Create a database with in-memory adapter
 const db = createDb({

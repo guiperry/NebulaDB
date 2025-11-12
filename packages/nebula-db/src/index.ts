@@ -9,10 +9,10 @@
 export * from '@nebula-db/core';
 
 // Export adapters
-export { MemoryAdapter } from '@nebula-db/adapter-memory';
+export { MemoryAdapter } from '@nebula-db/adapter-memorydb';
 export { LocalStorageAdapter } from '@nebula-db/adapter-localstorage';
 export { IndexedDBAdapter } from '@nebula-db/adapter-indexeddb';
-export { FileSystemAdapter } from '@nebula-db/adapter-filesystem';
+export { FileSystemAdapter } from '@nebula-db/adapter-filesystemdb';
 
 // Export plugins
 export { createValidationPlugin } from '@nebula-db/plugin-validation';
@@ -20,14 +20,14 @@ export { createValidationPlugin } from '@nebula-db/plugin-validation';
 // Import all adapters and plugins for dynamic loading
 import { LocalStorageAdapter as LocalStorageAdapterImport } from '@nebula-db/adapter-localstorage';
 import { IndexedDBAdapter as IndexedDBAdapterImport } from '@nebula-db/adapter-indexeddb';
-import { FileSystemAdapter as FileSystemAdapterImport } from '@nebula-db/adapter-filesystem';
+import { FileSystemAdapter as FileSystemAdapterImport } from '@nebula-db/adapter-filesystemdb';
 import { createValidationPlugin as createValidationPluginImport } from '@nebula-db/plugin-validation';
 
 /**
  * Create a database with sensible defaults
  */
 import { createDb as createCoreDb, DbOptions } from '@nebula-db/core';
-import { MemoryAdapter } from '@nebula-db/adapter-memory';
+import { MemoryAdapter } from '@nebula-db/adapter-memorydb';
 
 /**
  * Extended options for creating a database with defaults

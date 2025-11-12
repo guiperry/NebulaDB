@@ -326,7 +326,8 @@ export class EnhancedIndex {
       case 'prefix':
         candidateIds = [];
         for (let i = 0; i < this.btree.keys.length; i++) {
-          if (typeof this.btree.keys[i] === 'string' && this.btree.keys[i].startsWith(value)) {
+          const key = this.btree.keys[i];
+          if (typeof key === 'string' && typeof value === 'string' && key.startsWith(value)) {
             candidateIds.push(...this.btree.values[i]);
           }
         }
@@ -468,8 +469,8 @@ export class EnhancedIndex {
           return out;
         };
         // Use '' for lowest, '\uffff' for highest
-        const startKey = this.getCompoundKey(fill(lower, this.fields.length, ''));
-        const endKey = this.getCompoundKey(fill(upper, this.fields.length, '\uffff'));
+        const startKey = this.getCompoundKey(fill(lower, this.fields.length, '').filter((v): v is string | number => v !== null));
+        const endKey = this.getCompoundKey(fill(upper, this.fields.length, '\uffff').filter((v): v is string | number => v !== null));
         return { field: this.fields.slice(0, prefixLen).join(','), operator: 'range', value: [startKey, endKey] };
       }
       // If only a prefix of fields matched (all eq)

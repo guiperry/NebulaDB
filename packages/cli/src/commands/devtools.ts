@@ -78,13 +78,15 @@ export async function launchDevtools(port: number): Promise<void> {
       if ((err as any).code === 'EADDRINUSE') {
         spinner.fail(`Port ${port} is already in use. Try a different port.`);
       } else {
-        spinner.fail(`Failed to start devtools server: ${err.message}`);
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        spinner.fail(`Failed to start devtools server: ${errorMessage}`);
       }
       throw err;
     });
     
   } catch (error) {
-    spinner.fail(`Failed to launch devtools: ${error.message}`);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    spinner.fail(`Failed to launch devtools: ${errorMessage}`);
     throw error;
   }
 }

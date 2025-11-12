@@ -211,7 +211,7 @@ npm install @nebula/core @nebula/plugin-${pluginName}
 
 \`\`\`typescript
 import { createDb } from '@nebula/core';
-import { MemoryAdapter } from '@nebula/adapter-memory';
+import { MemoryAdapter } from '@nebula/adapter-memorydb';
 import { ${functionName} } from '@nebula/plugin-${pluginName}';
 
 // Create the plugin

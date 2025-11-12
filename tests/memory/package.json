@@ -18,7 +18,7 @@
   "license": "MIT",
   "dependencies": {
     "@nebula-db/core": "^0.1.0",
-    "@nebula/adapter-memory": "^0.1.0",
+    "@nebula/adapter-memorydb": "^0.1.0",
     "heapdump": "^0.3.15",
     "memwatch-next": "^0.3.0"
   }

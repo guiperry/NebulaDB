@@ -21,7 +21,7 @@
   "license": "MIT",
   "dependencies": {
     "@nebula-db/core": "^0.1.0",
-    "@nebula/adapter-memory": "^0.1.0",
+    "@nebula/adapter-memorydb": "^0.1.0",
     "@nebula/adapter-indexeddb": "^0.1.0",
     "@nebula/wasm": "^0.1.0",
     "benchmark": "^2.1.4",
@@ -30,7 +30,7 @@
     "lokijs": "^1.5.12",
     "lowdb": "^6.1.1",
     "pouchdb": "^8.0.1",
-    "pouchdb-adapter-memory": "^8.0.1",
+    "pouchdb-adapter-memorydb": "^8.0.1",
     "rxdb": "^14.17.1",
     "rxjs": "^7.8.1"
   },

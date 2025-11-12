@@ -1,6 +1,6 @@
 import { EnhancedNestedQueryOptimizer } from './packages/core/src/query/enhanced-nested-query-optimizer';
 import { createDb } from '@nebula-db/core';
-import { MemoryAdapter } from '@nebula/adapter-memory';
+import { MemoryAdapter } from '@nebula/adapter-memorydb';
 import { performance } from 'perf_hooks';
 
 // Define types for our data and queries

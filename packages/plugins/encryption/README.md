@@ -14,7 +14,7 @@ npm install @nebula-db/plugin-encryption
 
 ```typescript
 import { createDb } from '@nebula-db/core';
-import { MemoryAdapter } from '@nebula-db/adapter-memory';
+import { MemoryAdapter } from '@nebula-db/adapter-memorydb';
 import { createEncryptionPlugin } from '@nebula-db/plugin-encryption';
 
 // Create the plugin

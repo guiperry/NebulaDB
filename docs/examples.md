@@ -6,7 +6,7 @@ This document provides examples of how to use NebulaDB in different scenarios.
 
 ```typescript
 import { createDb } from '@nebula/core';
-import { MemoryAdapter } from '@nebula/adapter-memory';
+import { MemoryAdapter } from '@nebula/adapter-memorydb';
 
 // Create a database
 const db = createDb({ adapter: new MemoryAdapter() });
@@ -134,7 +134,7 @@ run();
 
 ```typescript
 import { createDb } from '@nebula/core';
-import { FileSystemAdapter } from '@nebula/adapter-filesystem';
+import { FileSystemAdapter } from '@nebula/adapter-filesystemdb';
 import path from 'path';
 
 // Create a database with file system persistence
@@ -294,7 +294,7 @@ run();
 
 ```typescript
 import { createDb } from '@nebula/core';
-import { MemoryAdapter } from '@nebula/adapter-memory';
+import { MemoryAdapter } from '@nebula/adapter-memorydb';
 
 // Create a database
 const db = createDb({ adapter: new MemoryAdapter() });
@@ -446,7 +446,7 @@ run();
 
 ```typescript
 import { createDb } from '@nebula/core';
-import { FileSystemAdapter } from '@nebula/adapter-filesystem';
+import { FileSystemAdapter } from '@nebula/adapter-filesystemdb';
 import path from 'path';
 
 // Create a database

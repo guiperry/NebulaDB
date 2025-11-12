@@ -20,7 +20,7 @@ function generateReadme(packagePath, packageJson) {
   
   if (packageType === 'core') {
     content += `## Quick Start\n\n`;
-    content += `\`\`\`typescript\nimport { createDb } from '${packageName}';\nimport { MemoryAdapter } from '@nebula-db/adapter-memory';\n\n`;
+    content += `\`\`\`typescript\nimport { createDb } from '${packageName}';\nimport { MemoryAdapter } from '@nebula-db/adapter-memorydb';\n\n`;
     content += `// Create a database with in-memory adapter\nconst db = createDb({\n  adapter: new MemoryAdapter()\n});\n\n`;
     content += `// Create a collection\nconst users = db.collection('users');\n\n`;
     content += `// Insert a document\nawait users.insert({ name: 'Alice', age: 30 });\n\n`;
@@ -38,7 +38,7 @@ function generateReadme(packagePath, packageJson) {
     const pluginFunctionName = 'create' + pluginName.charAt(0).toUpperCase() + pluginName.slice(1) + 'Plugin';
     
     content += `## Usage\n\n`;
-    content += `\`\`\`typescript\nimport { createDb } from '@nebula-db/core';\nimport { MemoryAdapter } from '@nebula-db/adapter-memory';\nimport { ${pluginFunctionName} } from '${packageName}';\n\n`;
+    content += `\`\`\`typescript\nimport { createDb } from '@nebula-db/core';\nimport { MemoryAdapter } from '@nebula-db/adapter-memorydb';\nimport { ${pluginFunctionName} } from '${packageName}';\n\n`;
     content += `// Create the plugin\nconst ${pluginName}Plugin = ${pluginFunctionName}();\n\n`;
     content += `// Create a database with the plugin\nconst db = createDb({\n  adapter: new MemoryAdapter(),\n  plugins: [${pluginName}Plugin]\n});\n\n`;
     content += `// Use the database with the plugin\nconst users = db.collection('users');\nawait users.insert({ name: 'Alice', age: 30 });\n\`\`\`\n\n`;
