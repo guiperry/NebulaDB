@@ -248,3 +248,29 @@ export interface Database {
   collection(name: string): ICollection;
   // Add other necessary methods
 }
+
+/**
+ * New Database interface for environment-specific adapters
+ */
+export interface NebulaDatabase {
+  collection<T = any>(name: string, options?: CollectionOptions): Collection<T>;
+  close(): Promise<void> | void;
+}
+
+/**
+ * New Collection interface for environment-specific adapters
+ */
+export interface Collection<T = any> {
+  insert(doc: T): Promise<T>;
+  find(query?: any): Promise<T[]>;
+  findOne(query: any): Promise<T | null>;
+  update(query: any, update: Partial<T>): Promise<T | null>;
+  delete(query: any): Promise<boolean>;
+}
+
+/**
+ * Options for collection operations in new adapters
+ */
+export interface CollectionOptions {
+  indexes?: IndexDefinition[];
+}

@@ -16,7 +16,7 @@ for dir in packages/adapter-*/; do
     cd "$dir"
     npm install
     npm run build
-    cd ../../..
+    cd ../..
   fi
 done
 
