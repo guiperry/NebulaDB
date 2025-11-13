@@ -162,10 +162,10 @@ export class EnhancedIndex {
     expireAfterSeconds?: number;
   };
 
-  private btree: BTreeNode<string> = new BTreeNode<string>();
-  private uniqueValues: Map<string | number, string> = new Map();
-  private docToKeys: Map<string, (string | number)[]> = new Map();
-  private expiryIndex: Map<string, number> = new Map(); // Document ID to expiry timestamp
+  private btree: BTreeNode<string | number> = new BTreeNode<string | number>();
+  private uniqueValues: Map<string | number, string | number> = new Map();
+  private docToKeys: Map<string | number, (string | number)[]> = new Map();
+  private expiryIndex: Map<string | number, number> = new Map(); // Document ID to expiry timestamp
 
   constructor(definition: IndexDefinition) {
     this.name = definition.name;
@@ -290,15 +290,15 @@ export class EnhancedIndex {
   /**
    * Find document IDs matching a query
    */
-  find(query: Query): Set<string> | null {
+  find(query: Query): Set<string | number> | null {
     // Check if the query can use this index
     const queryInfo = this.canUseIndex(query);
     if (!queryInfo) {
       return null; // Query can't use this index
     }
     const { operator, value } = queryInfo;
-    let result: Set<string>;
-    let candidateIds: string[] = [];
+    let result: Set<string | number>;
+    let candidateIds: (string | number)[] = [];
     switch (operator) {
       case 'eq':
         candidateIds = this.btree.find(value);
@@ -590,7 +590,7 @@ export class EnhancedIndex {
    * Clear the index
    */
   clear(): void {
-    this.btree = new BTreeNode<string>();
+    this.btree = new BTreeNode<string | number>();
     this.uniqueValues.clear();
     this.docToKeys.clear();
     this.expiryIndex.clear();
@@ -599,13 +599,13 @@ export class EnhancedIndex {
   /**
    * Check for expired documents and return their IDs
    */
-  getExpiredDocumentIds(): string[] {
+  getExpiredDocumentIds(): (string | number)[] {
     if (!this.options.expireAfterSeconds) {
       return [];
     }
 
     const now = Date.now();
-    const expiredIds: string[] = [];
+    const expiredIds: (string | number)[] = [];
 
     for (const [id, expiryTime] of this.expiryIndex.entries()) {
       if (expiryTime <= now) {
@@ -716,7 +716,7 @@ export class EnhancedIndexManager {
     }
 
     // Create a map of document IDs to documents for faster lookup
-    const docMap = new Map<string, Document>();
+    const docMap = new Map<string | number, Document>();
     for (const doc of allDocs) {
       docMap.set(doc.id, doc);
     }
@@ -747,9 +747,9 @@ export class EnhancedIndexManager {
   /**
    * Find the best index for a query
    */
-  private findBestIndex(query: Query): { index: EnhancedIndex, matchingIds: Set<string> } | null {
+  private findBestIndex(query: Query): { index: EnhancedIndex, matchingIds: Set<string | number> } | null {
     let bestIndex: EnhancedIndex | null = null;
-    let bestMatchingIds: Set<string> | null = null;
+    let bestMatchingIds: Set<string | number> | null = null;
     let bestScore = 0;
 
     // First, try to find an exact match for the query fields
@@ -919,8 +919,8 @@ export class EnhancedIndexManager {
    * Check for and remove expired documents
    * Returns the IDs of expired documents that were removed
    */
-  removeExpiredDocuments(): string[] {
-    const expiredIds: string[] = [];
+  removeExpiredDocuments(): (string | number)[] {
+    const expiredIds: (string | number)[] = [];
 
     // Check each index for expired documents
     for (const index of this.indexes.values()) {

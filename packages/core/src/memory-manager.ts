@@ -4,8 +4,8 @@ import { Document } from './types';
  * Memory manager for efficient document storage
  */
 export class MemoryManager {
-  private documents: Map<string, Document> = new Map();
-  private documentIds: string[] = [];
+  private documents: Map<string | number, Document> = new Map();
+  private documentIds: (string | number)[] = [];
   private chunkSize: number = 1000;
   private chunks: Document[][] = [];
   
@@ -32,7 +32,7 @@ export class MemoryManager {
   /**
    * Remove a document from the memory manager
    */
-  remove(id: string): boolean {
+  remove(id: string | number): boolean {
     const doc = this.documents.get(id);
     
     if (!doc) {
@@ -71,7 +71,7 @@ export class MemoryManager {
   /**
    * Update a document in the memory manager
    */
-  update(id: string, newDoc: Document): boolean {
+  update(id: string | number, newDoc: Document): boolean {
     if (!this.documents.has(id)) {
       return false;
     }
@@ -95,7 +95,7 @@ export class MemoryManager {
   /**
    * Get a document by ID
    */
-  get(id: string): Document | undefined {
+  get(id: string | number): Document | undefined {
     return this.documents.get(id);
   }
   
@@ -116,14 +116,14 @@ export class MemoryManager {
   /**
    * Get document IDs
    */
-  getIds(): string[] {
+  getIds(): (string | number)[] {
     return [...this.documentIds];
   }
   
   /**
    * Check if a document exists
    */
-  has(id: string): boolean {
+  has(id: string | number): boolean {
     return this.documents.has(id);
   }
   

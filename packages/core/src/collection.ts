@@ -85,7 +85,14 @@ export class Collection implements ICollection {
 
     // Process initial documents (decompress if needed)
     const processedDocs = initialDocs.map(doc => {
-      return this.compression.isCompressed(doc) ? this.compression.decompress(doc) : doc;
+      const decompressed = this.compression.isCompressed(doc) ? this.compression.decompress(doc) : doc;
+      return {
+        ...decompressed,
+        toJSON: () => {
+          const { toJSON, ...jsonDoc } = decompressed;
+          return jsonDoc;
+        }
+      };
     });
 
     this.documents = [...processedDocs];
@@ -142,6 +149,12 @@ export class Collection implements ICollection {
         processedDoc = await plugin.onBeforeInsert(this.name, processedDoc);
       }
     }
+
+    // Add toJSON method to the document
+    processedDoc.toJSON = () => {
+      const { toJSON, ...jsonDoc } = processedDoc;
+      return jsonDoc;
+    };
 
     // Apply compression if enabled
     const compressedDoc = this.compression.compress(processedDoc);
@@ -267,6 +280,12 @@ export class Collection implements ICollection {
           : doc;
 
         const updatedDoc = applyUpdate(decompressedDoc, processedUpdate);
+
+        // Add toJSON method
+        updatedDoc.toJSON = () => {
+          const { toJSON, ...jsonDoc } = updatedDoc;
+          return jsonDoc;
+        };
 
         // Apply compression if enabled
         const compressedDoc = this.compression.compress(updatedDoc);
@@ -437,11 +456,20 @@ export class Collection implements ICollection {
    * Set all documents in the collection (used by adapters)
    */
   setAll(documents: Document[]): void {
-    this.documents = [...documents];
+    // Add toJSON method to each document
+    const docsWithToJSON = documents.map(doc => ({
+      ...doc,
+      toJSON: () => {
+        const { toJSON, ...jsonDoc } = doc;
+        return jsonDoc;
+      }
+    }));
+
+    this.documents = [...docsWithToJSON];
     this.documentSignal.value = this.documents;
 
     // Update memory manager
-    this.memoryManager.setAll(documents);
+    this.memoryManager.setAll(docsWithToJSON);
 
     // Rebuild indexes
     this.indexManager.rebuild(this.documents);
@@ -521,7 +549,7 @@ export class Collection implements ICollection {
       return this.lock.withWriteLock(async () => {
         // First, find all matching documents for all queries
         const matchingDocsByQuery: Map<number, Document[]> = new Map();
-        const allMatchingDocs: Set<string> = new Set();
+        const allMatchingDocs: Set<string | number> = new Set();
 
         // Process all queries in parallel to find matching documents
         await Promise.all(queries.map(async (query, index) => {
@@ -546,12 +574,12 @@ export class Collection implements ICollection {
         }));
 
         // Create a map of document ID to document for quick lookup
-        const docMap = new Map<string, Document>();
+        const docMap = new Map<string | number, Document>();
         this.documents.forEach(doc => docMap.set(doc.id, doc));
 
         // Apply updates to all matching documents
         const updatedDocs: Document[] = [];
-        const updatedDocIds: Set<string> = new Set();
+        const updatedDocIds: Set<string | number> = new Set();
 
         // Process each query-update pair
         for (let i = 0; i < queries.length; i++) {
@@ -563,6 +591,11 @@ export class Collection implements ICollection {
             if (updatedDocIds.has(doc.id)) continue;
 
             const updatedDoc = applyUpdate(doc, update);
+            // Add toJSON method
+            updatedDoc.toJSON = () => {
+              const { toJSON, ...jsonDoc } = updatedDoc;
+              return jsonDoc;
+            };
             updatedDocs.push(updatedDoc);
             updatedDocIds.add(doc.id);
 
@@ -617,7 +650,7 @@ export class Collection implements ICollection {
       return this.lock.withWriteLock(async () => {
         // Process all queries in parallel to find matching documents
         const matchingDocsByQuery: Document[][] = [];
-        const allDocsToDelete: Set<string> = new Set();
+        const allDocsToDelete: Set<string | number> = new Set();
 
         // Process queries in parallel
         await Promise.all(queries.map(async (query, index) => {

@@ -94,7 +94,7 @@ export class ChromadbAdapter implements Adapter {
 
           // Add documents to collection
           await collection.add({
-            ids,
+            ids: ids as string[],
             documents: chromaDocuments
           });
         }

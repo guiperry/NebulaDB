@@ -167,55 +167,23 @@ export function createCachePlugin(options: CachePluginOptions = {}): Plugin {
       }
     },
     
-    // Cache query results
-    async onAfterQuery(collection: string, query: Query, results: Document[]): Promise<Document[]> {
-      // Skip caching if collection is excluded or results are empty and we don't cache empty results
-      if (
-        excludeCollections.includes(collection) ||
-        (results.length === 0 && !cacheEmptyResults)
-      ) {
-        return results;
-      }
-      
-      // Clear expired entries
-      clearExpired(collection);
-      
-      // Store in cache
-      const queryHash = hashQuery(query);
-      const collectionCache = getCollectionCache(collection);
-      
-      collectionCache.set(queryHash, {
-        results: [...results], // Clone to prevent mutations
-        timestamp: Date.now(),
-        queryString: JSON.stringify(query)
-      });
-      
-      // Update LRU
-      updateLRU(collection, queryHash);
-      
-      // Evict LRU if needed
-      evictLRU(collection);
-      
-      return results;
-    },
-    
     // Use cached results if available
     async onBeforeQuery(collection: string, query: Query): Promise<Query> {
       if (excludeCollections.includes(collection)) {
         return query;
       }
-      
+
       const queryHash = hashQuery(query);
       const collectionCache = getCollectionCache(collection);
-      
+
       // Check if query is cached and not expired
       const cachedEntry = collectionCache.get(queryHash);
       const now = Date.now();
-      
+
       if (cachedEntry && now - cachedEntry.timestamp <= ttl) {
         // Update LRU
         updateLRU(collection, queryHash);
-        
+
         // Add a special flag to the query to indicate we have a cache hit
         // This will be checked in onAfterQuery
         return {
@@ -226,17 +194,44 @@ export function createCachePlugin(options: CachePluginOptions = {}): Plugin {
           }
         };
       }
-      
+
       return query;
     },
-    
-    // Return cached results if we have a cache hit
+
+    // Cache query results or return cached results if we have a cache hit
     async onAfterQuery(collection: string, query: any, results: Document[]): Promise<Document[]> {
       if (query.__cache_hit__) {
         // Return the cached results
         return query.__cache_hit__.results;
       }
-      
+
+      // Skip caching if collection is excluded or results are empty and we don't cache empty results
+      if (
+        excludeCollections.includes(collection) ||
+        (results.length === 0 && !cacheEmptyResults)
+      ) {
+        return results;
+      }
+
+      // Clear expired entries
+      clearExpired(collection);
+
+      // Store in cache
+      const queryHash = hashQuery(query);
+      const collectionCache = getCollectionCache(collection);
+
+      collectionCache.set(queryHash, {
+        results: [...results], // Clone to prevent mutations
+        timestamp: Date.now(),
+        queryString: JSON.stringify(query)
+      });
+
+      // Update LRU
+      updateLRU(collection, queryHash);
+
+      // Evict LRU if needed
+      evictLRU(collection);
+
       return results;
     }
   };

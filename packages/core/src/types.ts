@@ -4,7 +4,9 @@
  */
 export interface Document {
   /** Unique identifier for the document */
-  id: string;
+  id: string | number;
+  /** Convert the document to JSON */
+  toJSON?(): any;
   [key: string]: any;
 }
 

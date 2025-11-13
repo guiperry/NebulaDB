@@ -31,6 +31,9 @@ export { Collection } from './collection';
 export { matchDocument, applyUpdate } from './optimized-query';
 export { EnhancedIndexManager as IndexManager, IndexType } from './enhanced-indexing';
 
+// Export utilities
+export { toJSON } from './utils/toJSON';
+
 // Export adapters
 export { InMemoryAdapter } from './in-memory-adapter';
 export { LocalstorageAdapter } from './localstorage';
