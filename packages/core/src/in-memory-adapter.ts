@@ -4,7 +4,7 @@ import { Adapter, Document } from './types';
  * Memory adapter for in-memory storage
  * Data is lost when the application restarts
  */
-export class MemoryAdapter implements Adapter {
+export class InMemoryAdapter implements Adapter {
   private data: Record<string, Document[]> = {};
 
   /**

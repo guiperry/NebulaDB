@@ -1,10 +1,7 @@
 import { createDb } from '@nebula-db/core';
-import { LocalStorageAdapter } from '@nebula/adapter-localstorage';
 
-// Create a database with localStorage adapter
-const db = createDb({
-  adapter: new LocalStorageAdapter('nebula-todo-app')
-});
+// Create a database (uses in-memory storage by default in browser)
+const db = createDb();
 
 // Get the todos collection
 const todos = db.collection('todos');

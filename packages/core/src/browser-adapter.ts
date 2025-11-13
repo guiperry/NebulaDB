@@ -1,97 +1,69 @@
-import type { NebulaDatabase, Collection, CollectionOptions } from './types';
+import { InMemoryAdapter } from './in-memory-adapter';
+import type { NebulaDatabase, Collection, CollectionOptions, Document } from './types';
 
 export async function createBrowserDatabase(config: any): Promise<NebulaDatabase> {
-  // Use IndexedDB for browser storage
-  const { openDB } = await import('idb');
-
-  const db = await openDB(config.name || 'nebuladb', 1, {
-    upgrade(db) {
-      // Create object stores for collections
-      config.collections?.forEach((collectionName: string) => {
-        if (!db.objectStoreNames.contains(collectionName)) {
-          db.createObjectStore(collectionName, { keyPath: '_id' });
-        }
-      });
-    },
-  });
+  const adapter = new InMemoryAdapter();
 
   return {
-    collection: (name: string, options?: CollectionOptions) => createBrowserCollection(db, name, options),
-    close: () => db.close(),
+    collection: <T = any>(name: string, options?: CollectionOptions) => createBrowserCollection(adapter, name),
+    close: () => {}, // In-memory, no close needed
   };
 }
 
-function createBrowserCollection(db: any, name: string, options?: CollectionOptions): Collection<any> {
-  const find = async (query?: any) => {
-    const tx = db.transaction(name, 'readonly');
-    const store = tx.objectStore(name);
-    const all = await store.getAll();
-
-    if (!query) return all;
-
-    // Simple query filtering (expand as needed)
-    return all.filter((doc: any) => {
-      for (const [key, value] of Object.entries(query)) {
-        if (doc[key] !== value) return false;
-      }
-      return true;
-    });
-  };
-
+function createBrowserCollection(adapter: InMemoryAdapter, name: string): Collection<any> {
   return {
     insert: async (doc: any) => {
-      const tx = db.transaction(name, 'readwrite');
-      const store = tx.objectStore(name);
-      await store.add(doc);
+      const data = await adapter.load();
+      if (!data[name]) data[name] = [];
+      const docWithId = { id: (doc as any).id || generateId(), ...doc } as Document;
+      data[name].push(docWithId);
+      await adapter.save(data);
+      return docWithId;
+    },
+
+    find: async (query?: any) => {
+      const data = await adapter.load();
+      const docs = data[name] || [];
+      if (!query) return docs;
+      return docs.filter(doc => matchesQuery(doc, query));
+    },
+
+    findOne: async (query: any) => {
+      const data = await adapter.load();
+      const docs = data[name] || [];
+      const doc = docs.find(d => matchesQuery(d, query));
+      return doc || null;
+    },
+
+    update: async (query: any, update: Partial<any>) => {
+      const data = await adapter.load();
+      const docs = data[name] || [];
+      const doc = docs.find(d => matchesQuery(d, query));
+      if (!doc) return null;
+      Object.assign(doc, update);
+      await adapter.save(data);
       return doc;
     },
 
-    find,
-
-    findOne: async (query: any) => {
-      const results = await find(query);
-      return results[0] || null;
-    },
-
-    update: async (query: any, update: any) => {
-      const tx = db.transaction(name, 'readwrite');
-      const store = tx.objectStore(name);
-
-      const docs = await store.getAll();
-      const doc = docs.find((d: any) => {
-        for (const [key, value] of Object.entries(query)) {
-          if (d[key] !== value) return false;
-        }
-        return true;
-      });
-
-      if (doc) {
-        const updated = { ...doc, ...update };
-        await store.put(updated);
-        return updated;
-      }
-
-      return null;
-    },
-
     delete: async (query: any) => {
-      const tx = db.transaction(name, 'readwrite');
-      const store = tx.objectStore(name);
-
-      const docs = await store.getAll();
-      const doc = docs.find((d: any) => {
-        for (const [key, value] of Object.entries(query)) {
-          if (d[key] !== value) return false;
-        }
-        return true;
-      });
-
-      if (doc) {
-        await store.delete(doc._id);
-        return true;
-      }
-
-      return false;
+      const data = await adapter.load();
+      const docs = data[name] || [];
+      const index = docs.findIndex(d => matchesQuery(d, query));
+      if (index === -1) return false;
+      docs.splice(index, 1);
+      await adapter.save(data);
+      return true;
     },
   };
+}
+
+function generateId(): string {
+  return Math.random().toString(36).substr(2, 9);
+}
+
+function matchesQuery(doc: Document, query: any): boolean {
+  for (const [key, value] of Object.entries(query)) {
+    if (doc[key] !== value) return false;
+  }
+  return true;
 }

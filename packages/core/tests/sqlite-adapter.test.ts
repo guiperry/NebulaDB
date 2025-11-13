@@ -1,19 +1,20 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { createDb, SQLiteAdapter } from '../src';
+import { createDb } from '../src';
+import { SqliteAdapter } from '@nebula-db/adapter-sqlite';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 
-describe('SQLiteAdapter', () => {
+describe('SqliteAdapter', () => {
   let tempDir: string;
   let dbPath: string;
-  let adapter: SQLiteAdapter;
+  let adapter: SqliteAdapter;
 
   beforeEach(() => {
     // Create a temporary directory for the test database
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'nebula-test-'));
     dbPath = path.join(tempDir, 'test.sqlite');
-    adapter = new SQLiteAdapter(dbPath);
+    adapter = new SqliteAdapter({ filename: dbPath });
   });
 
   afterEach(() => {
@@ -29,7 +30,9 @@ describe('SQLiteAdapter', () => {
     }
   });
 
-  it('should create a new database file', () => {
+  it('should create a new database file', async () => {
+    // Perform a save operation to ensure the database file is created
+    await adapter.save({ test: [{ id: '1', data: 'test' }] });
     expect(fs.existsSync(dbPath)).toBe(true);
   });
 
@@ -45,7 +48,7 @@ describe('SQLiteAdapter', () => {
     await db.save();
 
     // Create a new database with the same adapter
-    const newAdapter = new SQLiteAdapter(dbPath);
+    const newAdapter = new SqliteAdapter({ filename: dbPath });
     const newDb = createDb({ adapter: newAdapter });
 
     // Wait for data to be loaded (since loading is async)
@@ -76,7 +79,7 @@ describe('SQLiteAdapter', () => {
     await db.save();
 
     // Create a new database with the same adapter
-    const newAdapter = new SQLiteAdapter(dbPath);
+    const newAdapter = new SqliteAdapter({ filename: dbPath });
     const newDb = createDb({ adapter: newAdapter });
 
     // Wait for data to be loaded (since loading is async)
@@ -107,7 +110,7 @@ describe('SQLiteAdapter', () => {
     await db.save();
 
     // Create a new database with the same adapter
-    const newAdapter = new SQLiteAdapter(dbPath);
+    const newAdapter = new SqliteAdapter({ filename: dbPath });
     const newDb = createDb({ adapter: newAdapter });
 
     // Load the data
@@ -145,7 +148,7 @@ describe('SQLiteAdapter', () => {
     await db.save();
 
     // Create a new database with the same adapter
-    const newAdapter = new SQLiteAdapter(dbPath);
+    const newAdapter = new SqliteAdapter({ filename: dbPath });
     const newDb = createDb({ adapter: newAdapter });
 
     // Wait for data to be loaded (since loading is async)

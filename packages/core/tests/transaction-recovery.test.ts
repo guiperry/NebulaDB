@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { createDb, MemoryAdapter } from '../src';
+import { createDb, InMemoryAdapter } from '../src';
 // Import Transaction directly from the file to ensure it's included in coverage
 import { Transaction } from '../src/transaction';
 
@@ -10,7 +10,7 @@ describe('Transaction Failure Recovery Tests', () => {
 
   beforeEach(async () => {
     // Create a fresh database for each test
-    db = createDb({ adapter: new MemoryAdapter() });
+    db = createDb({ adapter: new InMemoryAdapter() });
     users = db.collection('users');
     posts = db.collection('posts');
 

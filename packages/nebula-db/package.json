@@ -39,7 +39,6 @@
   "dependencies": {
     "@nebula-db/adapter-filesystemdb": "^0.2.0",
     "@nebula-db/adapter-indexeddb": "^0.2.0",
-    "@nebula-db/adapter-localstorage": "^0.2.0",
     "@nebula-db/adapter-memorydb": "^0.2.0",
     "@nebula-db/core": "^0.2.0",
     "@nebula-db/plugin-validation": "^0.2.0",

@@ -9,8 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@nebula-db/core": "^0.1.0",
-    "@nebula/adapter-localstorage": "^0.1.0"
+    "@nebula-db/core": "^0.1.0"
   },
   "devDependencies": {
     "vite": "^5.0.10"

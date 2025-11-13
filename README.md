@@ -79,8 +79,7 @@ npm install @nebula-db/nebula-db
 # Install core package
 npm install @nebula-db/core
 
-# Install adapters as needed
-npm install @nebula-db/adapter-localstorage
+# Install adapters as needed (localstorage is built-in)
 npm install @nebula-db/adapter-indexeddb
 npm install @nebula-db/adapter-filesystemdb
 

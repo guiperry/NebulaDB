@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { createDb, MemoryAdapter } from '../src';
+import { createDb, InMemoryAdapter } from '../src';
 
 describe('Adapter-Specific Error Conditions Tests', () => {
   let db: any;
@@ -7,7 +7,7 @@ describe('Adapter-Specific Error Conditions Tests', () => {
 
   beforeEach(async () => {
     // Create a fresh database for each test
-    db = createDb({ adapter: new MemoryAdapter() });
+    db = createDb({ adapter: new InMemoryAdapter() });
     users = db.collection('users');
 
     // Add some initial data
@@ -171,7 +171,7 @@ describe('Adapter-Specific Error Conditions Tests', () => {
 
   it('should handle adapter initialization errors', async () => {
     // Simulate an adapter that fails to initialize
-    class FailingAdapter extends MemoryAdapter {
+    class FailingAdapter extends InMemoryAdapter {
       constructor() {
         super();
         throw new Error('Failed to initialize adapter');

@@ -28,7 +28,6 @@ export default defineConfig({
     alias: {
       '@nebula/core': resolve(__dirname, './packages/core/src'),
       '@nebula/adapter-memorydb': resolve(__dirname, './packages/adapters/memory/src'),
-      '@nebula/adapter-localstorage': resolve(__dirname, './packages/adapters/localstorage/src'),
       '@nebula/adapter-indexeddb': resolve(__dirname, './packages/adapters/indexeddb/src'),
       '@nebula/adapter-filesystemdb': resolve(__dirname, './packages/adapters/filesystem/src'),
       '@nebula/plugin-encryption': resolve(__dirname, './packages/plugins/encryption/src'),

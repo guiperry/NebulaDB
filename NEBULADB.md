@@ -39,8 +39,7 @@ npm install @nebula-db/nebula-db
 # Install core package
 npm install @nebula-db/core
 
-# Install adapters as needed
-npm install @nebula-db/adapter-localstorage
+# Install adapters as needed (localstorage is built-in)
 npm install @nebula-db/adapter-indexeddb
 npm install @nebula-db/adapter-filesystemdb
 
@@ -212,7 +211,6 @@ NebulaDB is organized as a monorepo with multiple packages:
 ### Adapters
 
 - **[@nebula-db/adapter-memorydb](https://www.npmjs.com/package/@nebula-db/adapter-memorydb)**: In-memory storage
-- **[@nebula-db/adapter-localstorage](https://www.npmjs.com/package/@nebula-db/adapter-localstorage)**: Browser localStorage adapter
 - **[@nebula-db/adapter-indexeddb](https://www.npmjs.com/package/@nebula-db/adapter-indexeddb)**: Browser IndexedDB adapter
 - **[@nebula-db/adapter-filesystemdb](https://www.npmjs.com/package/@nebula-db/adapter-filesystemdb)**: Node.js file system adapter
 

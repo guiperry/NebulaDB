@@ -1,12 +1,12 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createDb, MemoryAdapter } from '../src';
+import { createDb, InMemoryAdapter } from '../src';
 
 describe('Nested Queries', () => {
   let db;
   let collection;
 
   beforeEach(async () => {
-    db = createDb({ adapter: new MemoryAdapter() });
+    db = createDb({ adapter: new InMemoryAdapter() });
     collection = db.collection('test_nested');
     
     // Insert test data one by one instead of using insertMany

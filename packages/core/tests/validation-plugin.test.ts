@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createDb, MemoryAdapter } from '../src';
+import { createDb, InMemoryAdapter } from '../src';
 import { createValidationPlugin } from '../../../packages/plugins/validation/src';
 import { z } from 'zod';
 import { createMigrationPlugin } from '../../../packages/plugins/migration/src';
@@ -23,7 +23,7 @@ describe('ValidationPlugin', () => {
 
     // Create a database with the validation plugin
     const db = createDb({
-      adapter: new MemoryAdapter(),
+      adapter: new InMemoryAdapter(),
       plugins: [validationPlugin]
     });
 
@@ -67,7 +67,7 @@ describe('ValidationPlugin', () => {
 
     // Create a database with the validation plugin
     const db = createDb({
-      adapter: new MemoryAdapter(),
+      adapter: new InMemoryAdapter(),
       plugins: [validationPlugin]
     });
 
@@ -98,7 +98,7 @@ describe('ValidationPlugin', () => {
 
     // Create a database with the validation plugin
     const db = createDb({
-      adapter: new MemoryAdapter(),
+      adapter: new InMemoryAdapter(),
       plugins: [validationPlugin]
     });
 
@@ -114,9 +114,9 @@ describe('ValidationPlugin', () => {
 
 describe('Migration Plugin Schema Version Helpers', () => {
   it('should return 0 for new collection', async () => {
-    const plugin = createMigrationPlugin({ migrations: [] });
-    const db = createDb({ adapter: new MemoryAdapter(), plugins: [plugin] });
-    await db.init?.();
+    const plugin = createMigrationPlugin({ migrations: [] }) as any;
+    const db = createDb({ adapter: new InMemoryAdapter(), plugins: [plugin] });
+    // Plugin initialization happens automatically when database is created
     const version = await plugin.getSchemaVersion(db, 'test');
     expect(version).toBe(0);
   });
@@ -125,18 +125,18 @@ describe('Migration Plugin Schema Version Helpers', () => {
     const plugin = createMigrationPlugin({ migrations: [
       { version: 1, name: 'v1', collection: 'test', up: async db => {} },
       { version: 2, name: 'v2', collection: 'test', up: async db => {} }
-    ] });
-    const db = createDb({ adapter: new MemoryAdapter(), plugins: [plugin] });
-    await db.init?.();
+    ] }) as any;
+    const db = createDb({ adapter: new InMemoryAdapter(), plugins: [plugin] });
+    // Plugin initialization happens automatically when database is created
     await plugin.applyMigrations();
     const version = await plugin.getSchemaVersion(db, 'test');
     expect(version).toBe(2);
   });
 
   it('should forcibly set schema version', async () => {
-    const plugin = createMigrationPlugin({ migrations: [] });
-    const db = createDb({ adapter: new MemoryAdapter(), plugins: [plugin] });
-    await db.init?.();
+    const plugin = createMigrationPlugin({ migrations: [] }) as any;
+    const db = createDb({ adapter: new InMemoryAdapter(), plugins: [plugin] });
+    // Plugin initialization happens automatically when database is created
     await plugin.setSchemaVersion(db, 'test', 5);
     const version = await plugin.getSchemaVersion(db, 'test');
     expect(version).toBe(5);

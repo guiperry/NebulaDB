@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createDb, MemoryAdapter } from '../src';
+import { createDb, InMemoryAdapter } from '../src';
 
 describe('NebulaDB Core', () => {
   let db: any;
@@ -7,7 +7,7 @@ describe('NebulaDB Core', () => {
 
   beforeEach(() => {
     // Create a fresh database for each test
-    db = createDb({ adapter: new MemoryAdapter() });
+    db = createDb({ adapter: new InMemoryAdapter() });
     users = db.collection('users');
   });
 
@@ -32,7 +32,7 @@ describe('NebulaDB Core', () => {
       const result = await users.find({ age: { $gt: 28 } });
 
       expect(result).toHaveLength(2);
-      expect(result.map(u => u.name).sort()).toEqual(['Alice', 'Charlie']);
+      expect(result.map((u: any) => u.name).sort()).toEqual(['Alice', 'Charlie']);
     });
 
     it('should find one document', async () => {
@@ -89,7 +89,7 @@ describe('NebulaDB Core', () => {
       });
 
       expect(result).toHaveLength(2);
-      expect(result.map(u => u.name).sort()).toEqual(['Alice', 'Charlie']);
+      expect(result.map((u: any) => u.name).sort()).toEqual(['Alice', 'Charlie']);
     });
   });
 

@@ -1,98 +1,71 @@
-import Database from 'better-sqlite3';
-import path from 'path';
-import fs from 'fs';
-import type { NebulaDatabase, Collection, CollectionOptions } from './types';
+import { LocalstorageAdapter } from './localstorage';
+import type { NebulaDatabase, CollectionOptions, Collection, Document } from './types';
 
 export async function createNodeDatabase(config: any): Promise<NebulaDatabase> {
-  const dbPath = config.path || path.join(process.cwd(), 'nebuladb.sqlite');
-
-  // Ensure directory exists
-  const dir = path.dirname(dbPath);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-
-  const sqlite = new Database(dbPath);
-
-  // Enable foreign keys and other pragmas
-  sqlite.pragma('foreign_keys = ON');
-  sqlite.pragma('journal_mode = WAL');
+  const adapter = new LocalstorageAdapter();
+  await adapter.load(); // Load initial data
 
   return {
-    collection: (name: string, options?: CollectionOptions) => createNodeCollection(sqlite, name, options),
-    close: () => { sqlite.close(); },
+    collection: <T = any>(name: string, options?: CollectionOptions) => createNodeCollection<T>(adapter, name),
+    close: () => adapter.close(),
   };
 }
 
-function createNodeCollection(sqlite: any, name: string, options?: CollectionOptions): Collection<any> {
-  // Create table if it doesn't exist
-  const createTableSQL = `
-    CREATE TABLE IF NOT EXISTS ${name} (
-      _id TEXT PRIMARY KEY,
-      data TEXT NOT NULL,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `;
-  sqlite.exec(createTableSQL);
-
-  const find = async (query?: any) => {
-    let sql = `SELECT * FROM ${name}`;
-    let params: any[] = [];
-
-    if (query) {
-      const conditions: string[] = [];
-      for (const [key, value] of Object.entries(query)) {
-        conditions.push(`json_extract(data, '$.${key}') = ?`);
-        params.push(value);
-      }
-      if (conditions.length > 0) {
-        sql += ` WHERE ${conditions.join(' AND ')}`;
-      }
-    }
-
-    const stmt = sqlite.prepare(sql);
-    const rows = stmt.all(...params);
-
-    return rows.map((row: any) => JSON.parse(row.data));
-  };
-
+function createNodeCollection<T = any>(adapter: LocalstorageAdapter, name: string): Collection<T> {
   return {
-    insert: async (doc: any) => {
-      const stmt = sqlite.prepare(`INSERT INTO ${name} (_id, data) VALUES (?, ?)`);
-      stmt.run(doc._id, JSON.stringify(doc));
-      return doc;
+    insert: async (doc: T) => {
+      const data = await adapter.load();
+      if (!data[name]) data[name] = [];
+      const docWithId = { id: (doc as any).id || generateId(), ...doc } as Document;
+      data[name].push(docWithId);
+      await adapter.save(data);
+      return docWithId as T;
     },
 
-    find,
+    find: async (query?: any) => {
+      const data = await adapter.load();
+      const docs = data[name] || [];
+      if (!query) return docs as T[];
+      // Simple filtering
+      return docs.filter(doc => matchesQuery(doc, query)) as T[];
+    },
 
     findOne: async (query: any) => {
-      const results = await find(query);
-      return results[0] || null;
+      const data = await adapter.load();
+      const docs = data[name] || [];
+      const doc = docs.find(d => matchesQuery(d, query));
+      return doc as T || null;
     },
 
-    update: async (query: any, update: any) => {
-      // Find the document first
-      const docs = await find(query);
-      if (docs.length === 0) return null;
-
-      const doc = docs[0];
-      const updated = { ...doc, ...update };
-
-      const stmt = sqlite.prepare(`UPDATE ${name} SET data = ?, updated_at = CURRENT_TIMESTAMP WHERE _id = ?`);
-      stmt.run(JSON.stringify(updated), doc._id);
-
-      return updated;
+    update: async (query: any, update: Partial<T>) => {
+      const data = await adapter.load();
+      const docs = data[name] || [];
+      const doc = docs.find(d => matchesQuery(d, query));
+      if (!doc) return null;
+      Object.assign(doc, update);
+      await adapter.save(data);
+      return doc as T;
     },
 
     delete: async (query: any) => {
-      const docs = await find(query);
-      if (docs.length === 0) return false;
-
-      const stmt = sqlite.prepare(`DELETE FROM ${name} WHERE _id = ?`);
-      stmt.run(docs[0]._id);
-
+      const data = await adapter.load();
+      const docs = data[name] || [];
+      const index = docs.findIndex(d => matchesQuery(d, query));
+      if (index === -1) return false;
+      docs.splice(index, 1);
+      await adapter.save(data);
       return true;
     },
   };
+}
+
+function generateId(): string {
+  return Math.random().toString(36).substr(2, 9);
+}
+
+function matchesQuery(doc: Document, query: any): boolean {
+  for (const [key, value] of Object.entries(query)) {
+    if (doc[key] !== value) return false;
+  }
+  return true;
 }

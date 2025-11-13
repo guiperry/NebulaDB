@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { MemoryAdapter } from '../src';
+import { InMemoryAdapter } from '../src';
 
-describe('MemoryAdapter', () => {
+describe('InMemoryAdapter', () => {
   it('should load and save data', async () => {
-    const adapter = new MemoryAdapter();
+    const adapter = new InMemoryAdapter();
     
     // Initial load should return empty data
     const initialData = await adapter.load();
@@ -28,7 +28,7 @@ describe('MemoryAdapter', () => {
   });
   
   it('should create a deep copy of data', async () => {
-    const adapter = new MemoryAdapter();
+    const adapter = new InMemoryAdapter();
     
     // Save some data
     const testData = {

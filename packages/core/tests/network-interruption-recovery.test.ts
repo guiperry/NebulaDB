@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { createDb, MemoryAdapter } from '../src';
+import { createDb, InMemoryAdapter } from '../src';
 
 describe('Network Interruption Recovery Tests', () => {
   let db: any;
@@ -8,7 +8,7 @@ describe('Network Interruption Recovery Tests', () => {
 
   beforeEach(async () => {
     // Create a fresh database for each test
-    db = createDb({ adapter: new MemoryAdapter() });
+    db = createDb({ adapter: new InMemoryAdapter() });
     users = db.collection('users');
     posts = db.collection('posts');
 

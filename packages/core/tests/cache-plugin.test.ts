@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { createDb, MemoryAdapter } from '../src';
+import { createDb, InMemoryAdapter } from '../src';
 import { createCachePlugin } from '../../../packages/plugins/cache/src';
 
 describe('CachePlugin', () => {
@@ -17,7 +17,7 @@ describe('CachePlugin', () => {
 
     // Create a fresh database for each test
     db = createDb({
-      adapter: new MemoryAdapter(),
+      adapter: new InMemoryAdapter(),
       plugins: [cachePlugin]
     });
 
@@ -91,7 +91,7 @@ describe('CachePlugin', () => {
     });
 
     const smallCacheDb = createDb({
-      adapter: new MemoryAdapter(),
+      adapter: new InMemoryAdapter(),
       plugins: [smallCachePlugin]
     });
 
@@ -137,7 +137,7 @@ describe('CachePlugin', () => {
     });
 
     const exclusionDb = createDb({
-      adapter: new MemoryAdapter(),
+      adapter: new InMemoryAdapter(),
       plugins: [exclusionPlugin]
     });
 

@@ -1,4 +1,5 @@
-import { createDb, MemoryAdapter, SQLiteAdapter } from '../../packages/core/src';
+import { createDb, InMemoryAdapter } from '../../packages/core/src';
+import { SqliteAdapter } from '@nebula-db/adapter-sqlite';
 import { performance } from 'perf_hooks';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -52,7 +53,7 @@ async function benchmarkMemoryAdapter(documentCounts: number[]) {
   for (const count of documentCounts) {
     console.log(`\nTesting with ${count} documents`);
     
-    const db = createDb({ adapter: new MemoryAdapter() });
+    const db = createDb({ adapter: new InMemoryAdapter() });
     const users = db.collection('users');
     const data = generateRandomData(count);
     
@@ -109,7 +110,7 @@ async function benchmarkSQLiteAdapter(documentCounts: number[]) {
   for (const count of documentCounts) {
     console.log(`\nTesting with ${count} documents`);
     
-    const adapter = new SQLiteAdapter(dbPath);
+    const adapter = new SqliteAdapter({ filename: dbPath });
     const db = createDb({ adapter });
     const users = db.collection('users');
     const data = generateRandomData(count);

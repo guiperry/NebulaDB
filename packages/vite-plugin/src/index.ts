@@ -170,7 +170,7 @@ function generateVirtualModule(
       code += `const adapter = new FileSystemAdapter(${JSON.stringify(adapterOptions.path || 'data.json')});\n`;
       break;
     case 'sqlite':
-      code += `const adapter = new SQLiteAdapter(${JSON.stringify(adapterOptions.path || 'data.sqlite')});\n`;
+      code += `const adapter = new SqliteAdapter({ filename: ${JSON.stringify(adapterOptions.path || 'data.sqlite')} });\n`;
       break;
     case 'redis':
       code += `const adapter = new RedisAdapter(${JSON.stringify(adapterOptions)});\n`;
