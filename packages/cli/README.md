@@ -7,29 +7,84 @@ Part of the [NebulaDB](https://github.com/Nom-nom-hub/NebulaDB) project - a high
 ## Installation
 
 ```bash
-npm install @nebula-db/cli
+npm install -g @nebula-db/cli
 ```
 
-## Quick Start
+## Commands
 
-```typescript
-import { createDb } from '@nebula-db/cli';
-import { MemoryAdapter } from '@nebula-db/adapter-memorydb';
+### `nebula init`
 
-// Create a database with in-memory adapter
-const db = createDb({
-  adapter: new MemoryAdapter()
-});
+Initialize a new NebulaDB project in the current directory.
 
-// Create a collection
-const users = db.collection('users');
+```bash
+nebula init
+```
 
-// Insert a document
-await users.insert({ name: 'Alice', age: 30 });
+Options:
+- `-d, --directory <directory>`: Directory to initialize the project in (default: '.')
 
-// Query documents
-const result = await users.find({ age: { $gt: 20 } });
-console.log(result);
+### `nebula generate:adapter <name>`
+
+Generate a new adapter template.
+
+```bash
+nebula generate:adapter my-adapter
+```
+
+Options:
+- `-d, --directory <directory>`: Directory to create the adapter in (default: './adapters')
+
+### `nebula generate:plugin <name>`
+
+Generate a new plugin template.
+
+```bash
+nebula generate:plugin my-plugin
+```
+
+Options:
+- `-d, --directory <directory>`: Directory to create the plugin in (default: './plugins')
+
+### `nebula devtools`
+
+Launch NebulaDB devtools server.
+
+```bash
+nebula devtools
+```
+
+Options:
+- `-p, --port <port>`: Port to run the devtools on (default: '3000')
+
+### `nebula migrate`
+
+Run database migrations.
+
+```bash
+nebula migrate
+```
+
+Options:
+- `-d, --directory <directory>`: Directory containing migration files (default: './migrations')
+- `-c, --config <config>`: Path to configuration file (default: './nebula.config.js')
+
+## Usage Examples
+
+```bash
+# Initialize a new project
+nebula init
+
+# Generate an adapter
+nebula generate:adapter sqlite-adapter
+
+# Generate a plugin
+nebula generate:plugin validation-plugin
+
+# Launch devtools
+nebula devtools --port 3333
+
+# Run migrations
+nebula migrate --config ./config/nebula.js
 ```
 
 ## Documentation
